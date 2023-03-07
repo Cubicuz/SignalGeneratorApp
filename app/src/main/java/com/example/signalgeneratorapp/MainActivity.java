@@ -6,6 +6,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import androidx.annotation.Nullable;
 
@@ -17,6 +19,8 @@ public class MainActivity extends Activity {
     private Sensor rotationSensor;
     private Spinner sensorSpinner;
     private SensorInput sensorInput;
+    private ArrayAdapter<String> arrayAdapter;
+    private ListView listViewMain;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,13 +30,14 @@ public class MainActivity extends Activity {
         mSineSynth = new SineSynth();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorSpinner = findViewById(R.id.spinnerSensorSelect);
+        listViewMain = findViewById(R.id.linearLayoutMain);
 
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
         sensorInput = new SensorInput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, mSineSynth.getLeftFrequencyPort(), mSineSynth.getRightFrequencyPort(), findViewById(R.id.textViewX), findViewById(R.id.textViewY), findViewById(R.id.textViewZ));
 
         // list all the sensors present in the device
         List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
 
         for (Sensor sensor: deviceSensors) {
             if (sensor.getName() != null){
@@ -40,6 +45,9 @@ public class MainActivity extends Activity {
             }
         }
         sensorSpinner.setAdapter(arrayAdapter);
+
+        SensorSignalAdapter ssa = new SensorSignalAdapter(arrayAdapter);
+        listViewMain.setAdapter(ssa);
     }
 
     @Override
