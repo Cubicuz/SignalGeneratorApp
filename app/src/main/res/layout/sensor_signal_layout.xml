@@ -8,14 +8,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <Spinner
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerSensor"
                 android:layout_weight="1"/>
         <Spinner
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerSignal"
                 android:layout_weight="1"/>
+        <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/switch2" android:layout_weight="1"
+                android:showText="false" android:splitTrack="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
