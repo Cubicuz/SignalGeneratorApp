@@ -33,11 +33,12 @@
                 android:dividerPadding="5dp">
 
             <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
+                <RadioButton
                         android:text="Sensor Wert X"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textViewSensorX"/>
+                        android:id="@+id/radioButtonSensorX"
+                        android:checked="true"/>
                 <ProgressBar
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_height="match_parent"
@@ -53,11 +54,11 @@
             <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <TextView
+                <RadioButton
                         android:text="Sensor Wert Y"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textViewSensorY"/>
+                        android:id="@+id/radioButtonSensorY"/>
                 <ProgressBar
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"
@@ -73,11 +74,11 @@
             <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <TextView
+                <RadioButton
                         android:text="Sensor Wert Z"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textViewSensorZ"/>
+                        android:id="@+id/radioButtonSensorZ"/>
                 <ProgressBar
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="wrap_content"

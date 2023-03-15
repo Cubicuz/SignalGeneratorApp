@@ -23,7 +23,9 @@ public class SignalEditActivity extends Activity {
     private Map<String, Sensor> nameToSensor = new HashMap<>();
     private Sensor selectedSensor;
 
+
     private TextView textSensorValueX, textSensorValueY, textSensorValueZ;
+    private RadioButton radioButtonSensorX, radioButtonSensorY, radioButtonSensorZ;
     private ProgressBar progressSensorValueX, progressSensorValueY, progressSensorValueZ;
     private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
@@ -40,6 +42,7 @@ public class SignalEditActivity extends Activity {
             } else {
                 textSensorValueY.setText("-.--");
                 progressSensorValueY.setProgress(0);
+                radioButtonSensorY.setEnabled(false);
             }
             if (event.values.length > 2) {
                 textSensorValueZ.setText(String.format("%.02f", event.values[2]));
@@ -47,6 +50,7 @@ public class SignalEditActivity extends Activity {
             } else {
                 textSensorValueZ.setText("-.--");
                 progressSensorValueZ.setProgress(0);
+                radioButtonSensorZ.setEnabled(false);
             }
 
         }
@@ -85,6 +89,9 @@ public class SignalEditActivity extends Activity {
         progressSensorValueX = findViewById(R.id.progressBarSensorValueX);
         progressSensorValueY = findViewById(R.id.progressBarSensorValueY);
         progressSensorValueZ = findViewById(R.id.progressBarSensorValueZ);
+        radioButtonSensorX = findViewById(R.id.radioButtonSensorX);
+        radioButtonSensorY = findViewById(R.id.radioButtonSensorY);
+        radioButtonSensorZ = findViewById(R.id.radioButtonSensorZ);
 
         // list all the sensors present in the device
         List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -104,6 +111,9 @@ public class SignalEditActivity extends Activity {
                     sensorManager.unregisterListener(sensorEventListener);
                 }
                 selectedSensor = nameToSensor.get(parent.getItemAtPosition(position));
+                radioButtonSensorX.setChecked(true);
+                radioButtonSensorY.setEnabled(true);
+                radioButtonSensorZ.setEnabled(true);
                 sensorManager.registerListener(sensorEventListener, selectedSensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
 
@@ -111,7 +121,22 @@ public class SignalEditActivity extends Activity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        radioButtonSensorX.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
+        radioButtonSensorY.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
+        radioButtonSensorZ.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
     }
+
+    private final CompoundButton.OnCheckedChangeListener sensorRadioButtonCheckedChanged = (buttonView, isChecked) -> {
+        if (isChecked){
+            for (RadioButton rb : new RadioButton[]{radioButtonSensorX, radioButtonSensorY, radioButtonSensorZ}){
+                if (buttonView != rb){
+                    rb.setChecked(false);
+                }
+            }
+        }
+    };
+
 
     @Override
     protected void onResume() {
