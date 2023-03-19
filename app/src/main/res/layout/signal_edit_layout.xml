@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   android:layout_width="match_parent"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
     <LinearLayout
@@ -113,7 +113,7 @@
                 android:id="@+id/editTextSignalName"/>
         <com.google.android.material.chip.ChipGroup
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" app:singleLine="true">
+                android:layout_height="wrap_content" app:singleLine="true">
 
             <com.google.android.material.chip.Chip
                     android:id="@+id/chipLeftAudioChannel"
@@ -138,5 +138,35 @@
                     app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
                     app:checkedIconTint="#000000"/>
         </com.google.android.material.chip.ChipGroup>
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1">
+
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView
+                        android:text="Frequenz"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/seekBar" android:min="1" android:max="20000"/>
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:ems="5"
+                        android:id="@+id/editTextNumberDecimal"
+                        android:text="200"/>
+                <TextView
+                        android:text="Hz"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="20sp"
+                        android:gravity="center"/>
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
