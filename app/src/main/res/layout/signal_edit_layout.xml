@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
     <LinearLayout
@@ -11,7 +12,7 @@
                 android:text="Edit Signal 1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"/>
+                android:textAlignment="center" android:textSize="20sp"/>
 
         <TableRow
                 android:layout_width="match_parent"
@@ -19,16 +20,18 @@
             <TextView
                     android:text="Sensor Auswahl"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent"
+                    android:textSize="20sp"/>
             <Spinner
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/signalEditSensorSpinner"/>
+                    android:id="@+id/signalEditSensorSpinner"
+                    android:minHeight="40dip"/>
         </TableRow>
         <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:stretchColumns="1"
                 android:dividerPadding="5dp">
 
@@ -92,5 +95,48 @@
                         android:id="@+id/textViewSensorValueZ"/>
             </TableRow>
         </TableLayout>
+        <TextView
+                android:text="Signal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"/>
+        <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerSignalSelect" android:minHeight="40dip"/>
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="Name"
+                android:ems="10"
+                android:id="@+id/editTextSignalName"/>
+        <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                    android:id="@+id/chipLeftAudioChannel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    app:chipIconVisible="true"
+                    app:chipIcon="@android:drawable/ic_lock_silent_mode_off"
+                    app:chipIconTint="#FFFFFF"
+                    android:text="left channel"
+                    app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
+                    app:checkedIconTint="#000000"/>
+            <com.google.android.material.chip.Chip
+                    android:id="@+id/chipRightAudioChannel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    app:chipIconVisible="true"
+                    app:chipIcon="@android:drawable/ic_lock_silent_mode_off"
+                    app:chipIconTint="#FFFFFF"
+                    android:text="right channel"
+                    app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
+                    app:checkedIconTint="#000000"/>
+        </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
