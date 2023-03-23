@@ -3,15 +3,16 @@ package com.example.signalgeneratorapp;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
-import com.jsyn.unitgen.LineOut;
-import com.jsyn.unitgen.LinearRamp;
-import com.jsyn.unitgen.SineOscillator;
+import com.jsyn.unitgen.*;
 
 public class SineSynth {
     private final Synthesizer mSynth;
     private final LinearRamp mAmpJack; // for smoothing and splitting the level
     private final SineOscillator mOscLeft;
     private final SineOscillator mOscRight;
+
+    private final SawtoothOscillator metaOscillator;
+    private final SchmidtTrigger schmidtTrigger;
     private final LineOut mLineOut; // stereo output
 
     public SineSynth() {
@@ -23,11 +24,20 @@ public class SineSynth {
         mSynth.add(mOscLeft = new SineOscillator());
         mSynth.add(mOscRight = new SineOscillator());
         mSynth.add(mLineOut = new LineOut());
+        mSynth.add(metaOscillator = new SawtoothOscillator());
+        mSynth.add(schmidtTrigger = new SchmidtTrigger());
 
         // Split level setting to both oscillators.
         mAmpJack.output.connect(mOscLeft.amplitude);
         mAmpJack.output.connect(mOscRight.amplitude);
         mAmpJack.time.set(0.1); // duration of ramp
+
+        schmidtTrigger.output.connect(mAmpJack.input);
+        schmidtTrigger.setLevel.set(0.8);
+        schmidtTrigger.resetLevel.set(0.7);
+
+        metaOscillator.output.connect(schmidtTrigger.input);
+        metaOscillator.frequency.setup(0.01, 1, 1);
 
         // Connect an oscillator to each channel of the LineOut
         mOscLeft.output.connect(0, mLineOut.input, 0);
