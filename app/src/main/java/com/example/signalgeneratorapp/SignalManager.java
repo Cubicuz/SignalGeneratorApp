@@ -1,5 +1,8 @@
 package com.example.signalgeneratorapp;
 
+import com.example.signalgeneratorapp.signals.Signal;
+import com.example.signalgeneratorapp.signals.SineSignal;
+import com.jsyn.Synthesizer;
 import com.jsyn.unitgen.SineOscillator;
 
 import java.util.*;
@@ -7,7 +10,7 @@ import java.util.*;
 
 
 
-public class SignalManager {
+public final class SignalManager {
     public class SignalSensorConnection {
         // TODO fill with code and think about a ConnectionManager
         public double convertSensorValueToSignalValue(double sensorValue){
@@ -18,7 +21,7 @@ public class SignalManager {
             return 0.0;
         }
     }
-    private Map<String, Signal> signals = new HashMap<>();
+    private final Map<String, Signal> signals = new HashMap<>();
 
     public Collection<Signal> getSignalList(){
         return signals.values();
@@ -26,11 +29,13 @@ public class SignalManager {
 
     private SignalSensorConnection conn;
 
+    private final Synthesizer synthesizer;
+
     public Signal addSignal(String name){
         if (signals.containsKey(name)){
             return signals.get(name);
         }
-        signals.put(name, new Signal(name, new SineOscillator()));
+        signals.put(name, new SineSignal(name, synthesizer));
         return signals.get(name);
     }
 
@@ -45,5 +50,17 @@ public class SignalManager {
             signals.put(to, sig);
             // call event or so
         }
+    }
+
+    private SignalManager(Synthesizer synthesizer){
+        this.synthesizer = synthesizer;
+    }
+    private static SignalManager instance;
+    public static SignalManager getInstance() { return instance; }
+    public static SignalManager createInstance(Synthesizer synthesizer) {
+        if (instance != null){
+            return instance;
+        }
+        return instance = new SignalManager(synthesizer);
     }
 }
