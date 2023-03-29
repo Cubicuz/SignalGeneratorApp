@@ -19,6 +19,8 @@ public class SineSynth {
         // Create a JSyn synthesizer that uses the Android output.
         mSynth = JSyn.createSynthesizer(new JSynAndroidAudioDevice());
 
+        SignalManager.createInstance(mSynth);
+
         // Create the unit generators and add them to the synthesizer
         mSynth.add(mAmpJack = new LinearRamp());
         mSynth.add(mOscLeft = new SineOscillator());

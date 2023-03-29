@@ -21,7 +21,7 @@
                 </intent-filter>
             </activity>
             <activity android:name=".SignalEditActivity"
-                      android:exported="true">
+                      android:exported="false">
 
             </activity>
     </application>

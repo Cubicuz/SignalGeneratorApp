@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import androidx.annotation.Nullable;
+import com.jsyn.JSyn;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+
+        SignalManager.createInstance(JSyn.createSynthesizer(new JSynAndroidAudioDevice()));
 
         mSineSynth = new SineSynth();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);

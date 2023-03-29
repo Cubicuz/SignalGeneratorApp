@@ -8,9 +8,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.signalgeneratorapp.signals.Signal;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +28,8 @@ public class SignalEditActivity extends Activity {
     private Spinner sensorSpinner;
     private Map<String, Sensor> nameToSensor = new HashMap<>();
     private Sensor selectedSensor;
+
+    private Signal editingSignal;
 
 
     private TextView textSensorValueX, textSensorValueY, textSensorValueZ;
@@ -152,5 +160,39 @@ public class SignalEditActivity extends Activity {
         if (sensorEventListener != null){
             sensorManager.unregisterListener(sensorEventListener);
         }
+    }
+
+    public class InputPortAdapter extends RecyclerView.Adapter<InputPortAdapter.ViewHolder>{
+
+        @NonNull
+        @NotNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.signal_edit_input_port_row_item, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
+            // replace content
+
+            holder.InputPortName.setText(editingSignal.inputsPorts().get(position).getName());
+            // need to access connectionManager
+        }
+
+        @Override
+        public int getItemCount() {
+            return editingSignal.inputsPorts().size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public final TextView InputPortName, SelectedOutput;
+            public ViewHolder(View view){
+                super(view);
+                InputPortName = view.findViewById(R.id.textViewInputPortName);
+                SelectedOutput = view.findViewById(R.id.textViewSelectedOutput);
+            }
+        }
+
     }
 }
