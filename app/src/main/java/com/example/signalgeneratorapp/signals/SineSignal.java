@@ -12,7 +12,7 @@ public class SineSignal extends Signal {
 
     public SineSignal (String name, Synthesizer synthesizer){
         super(name, synthesizer);
-        this.synthesizer.add(oscillator = new SineOscillator());
+        synthesizer.add(oscillator = new SineOscillator());
         inputs.add(oscillator.amplitude);
         inputs.add(oscillator.frequency);
         outputs.add(oscillator.output);
@@ -22,5 +22,13 @@ public class SineSignal extends Signal {
     protected void finalize() throws Throwable {
         synthesizer.remove(oscillator);
         super.finalize();
+    }
+
+    public UnitInputPort frequency() {
+        return oscillator.frequency;
+    }
+
+    public UnitInputPort amplitude() {
+        return oscillator.amplitude;
     }
 }

@@ -28,8 +28,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        SignalManager.createInstance(JSyn.createSynthesizer(new JSynAndroidAudioDevice()));
-
         mSineSynth = new SineSynth();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorSpinner = findViewById(R.id.spinnerSensorSelect);

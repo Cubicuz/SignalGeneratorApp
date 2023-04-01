@@ -2,7 +2,9 @@ package com.example.signalgeneratorapp;
 
 import com.example.signalgeneratorapp.signals.Signal;
 import com.example.signalgeneratorapp.signals.SineSignal;
+import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
+import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 
@@ -57,16 +59,19 @@ public final class SignalManager {
         synthesizer.stop();
     }
 
-    private SignalManager(Synthesizer synthesizer){
-        this.synthesizer = synthesizer;
+    public UnitInputPort lineout(){
+        return lineOut.input;
+    }
+
+    private SignalManager(){
+        synthesizer = JSyn.createSynthesizer(new JSynAndroidAudioDevice());
         synthesizer.add(lineOut = new LineOut());
     }
     private static SignalManager instance;
-    public static SignalManager getInstance() { return instance; }
-    public static SignalManager createInstance(Synthesizer synthesizer) {
+    public static SignalManager getInstance() {
         if (instance != null){
             return instance;
         }
-        return instance = new SignalManager(synthesizer);
+        return instance = new SignalManager();
     }
 }

@@ -1,49 +1,50 @@
 package com.example.signalgeneratorapp;
 
+import com.example.signalgeneratorapp.signals.LinearRampSignal;
+import com.example.signalgeneratorapp.signals.SawtoothSignal;
+import com.example.signalgeneratorapp.signals.SchmidtTriggerSignal;
+import com.example.signalgeneratorapp.signals.SineSignal;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.*;
 
 public class SineSynth {
-    private final Synthesizer mSynth;
-    private final LinearRamp mAmpJack; // for smoothing and splitting the level
-    private final SineOscillator mOscLeft;
-    private final SineOscillator mOscRight;
-
-    private final SawtoothOscillator metaOscillator;
-    private final SchmidtTrigger schmidtTrigger;
-    private final LineOut mLineOut; // stereo output
+    private final LinearRampSignal mAmpJack; // for smoothing and splitting the level
+    private final SineSignal mOscLeft;
+    private final SineSignal mOscRight;
+    private final SawtoothSignal metaOscillator;
+    private final SchmidtTriggerSignal schmidtTrigger;
 
     public SineSynth() {
         // Create a JSyn synthesizer that uses the Android output.
-        mSynth = JSyn.createSynthesizer(new JSynAndroidAudioDevice());
 
-        SignalManager.createInstance(mSynth);
+        SignalManager sm = SignalManager.getInstance();
+
+        mOscLeft = sm.addSignal("sineLeft", SineSignal::new);
+        mOscRight = sm.addSignal("sineRight", SineSignal::new);
+
+        mAmpJack = sm.addSignal("AmpJack", LinearRampSignal::new);
+        metaOscillator = sm.addSignal("SawTooth", SawtoothSignal::new);
+        schmidtTrigger = sm.addSignal("schmidtTrigger", SchmidtTriggerSignal::new);
 
         // Create the unit generators and add them to the synthesizer
-        mSynth.add(mAmpJack = new LinearRamp());
-        mSynth.add(mOscLeft = new SineOscillator());
-        mSynth.add(mOscRight = new SineOscillator());
-        mSynth.add(mLineOut = new LineOut());
-        mSynth.add(metaOscillator = new SawtoothOscillator());
-        mSynth.add(schmidtTrigger = new SchmidtTrigger());
 
         // Split level setting to both oscillators.
-        mAmpJack.output.connect(mOscLeft.amplitude);
-        mAmpJack.output.connect(mOscRight.amplitude);
-        mAmpJack.time.set(0.1); // duration of ramp
+        mAmpJack.firstOutputPort().connect(mOscLeft.amplitude());
+        mAmpJack.firstOutputPort().connect(mOscRight.amplitude());
+        mAmpJack.time().set(0.1); // duration of ramp
 
-        schmidtTrigger.output.connect(mAmpJack.input);
-        schmidtTrigger.setLevel.set(0.8);
-        schmidtTrigger.resetLevel.set(0.7);
+        schmidtTrigger.firstOutputPort().connect(mAmpJack.input());
+        schmidtTrigger.setLevel().set(0.8);
+        schmidtTrigger.resetLevel().set(0.7);
 
-        metaOscillator.output.connect(schmidtTrigger.input);
-        metaOscillator.frequency.setup(0.01, 1, 1);
+        metaOscillator.firstOutputPort().connect(schmidtTrigger.input());
+        metaOscillator.frequency().setup(0.01, 1, 1);
 
         // Connect an oscillator to each channel of the LineOut
-        mOscLeft.output.connect(0, mLineOut.input, 0);
-        mOscRight.output.connect(0, mLineOut.input, 1);
+        mOscLeft.firstOutputPort().connect(0, sm.lineout(), 0);
+        mOscRight.firstOutputPort().connect(0, sm.lineout(), 1);
 
         // Setup ports for nice UI
         getAmplitudePort().setName("Level");
@@ -55,16 +56,14 @@ public class SineSynth {
     }
 
     public void start() {
-        mSynth.start();
-        mLineOut.start();
+        SignalManager.getInstance().startAudio();
     }
 
     public void stop() {
-        mLineOut.stop();
-        mSynth.stop();
+        SignalManager.getInstance().stopAudio();
     }
 
-    public UnitInputPort getAmplitudePort() { return mAmpJack.getInput(); }
-    public UnitInputPort getLeftFrequencyPort() { return mOscLeft.frequency; }
-    public UnitInputPort getRightFrequencyPort() { return mOscRight.frequency; }
+    public UnitInputPort getAmplitudePort() { return mAmpJack.input(); }
+    public UnitInputPort getLeftFrequencyPort() { return mOscLeft.frequency(); }
+    public UnitInputPort getRightFrequencyPort() { return mOscRight.frequency(); }
 }

@@ -25,6 +25,6 @@ public abstract class Signal {
     public LinkedList<UnitOutputPort> outputsPorts(){
         return outputs;
     }
-
+    public UnitOutputPort firstOutputPort() {return outputs.getFirst(); }
 
 }
