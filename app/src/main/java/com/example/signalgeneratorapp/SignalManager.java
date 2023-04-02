@@ -8,6 +8,8 @@ import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -16,6 +18,7 @@ import java.util.function.Function;
 public final class SignalManager {
 
     private final Map<String, Signal> signals = new HashMap<>();
+    private long cnt = 0;
 
     public Collection<Signal> getSignalList(){
         return signals.values();
@@ -33,7 +36,18 @@ public final class SignalManager {
         }
         E signal = fn.apply(name, synthesizer);
         signals.put(name, signal);
+        cnt++;
+        signalsChanged.firePropertyChange("signal count", cnt-1, cnt);
         return signal;
+    }
+
+    private final PropertyChangeSupport signalsChanged;
+
+    public void addSignalsChangedListener(PropertyChangeListener pcl){
+        signalsChanged.addPropertyChangeListener(pcl);
+    }
+    public void removeSignalsChangedListener(PropertyChangeListener pcl){
+        signalsChanged.removePropertyChangeListener(pcl);
     }
 
     public void changeSignalName(String from, String to) {
@@ -66,6 +80,7 @@ public final class SignalManager {
     private SignalManager(){
         synthesizer = JSyn.createSynthesizer(new JSynAndroidAudioDevice());
         synthesizer.add(lineOut = new LineOut());
+        signalsChanged = new PropertyChangeSupport(this);
     }
     private static SignalManager instance;
     public static SignalManager getInstance() {

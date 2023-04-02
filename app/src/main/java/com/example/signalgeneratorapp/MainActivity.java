@@ -6,11 +6,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import androidx.annotation.Nullable;
-import com.jsyn.JSyn;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class MainActivity extends Activity {
     private Spinner sensorSpinner;
     private SensorInput sensorInput;
     private ArrayAdapter<String> arrayAdapter;
-    private ListView listViewMain;
+    private RecyclerView listViewMain;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +46,8 @@ public class MainActivity extends Activity {
         }
         sensorSpinner.setAdapter(arrayAdapter);
 
-        SensorSignalAdapter ssa = new SensorSignalAdapter(arrayAdapter);
+        SensorSignalAdapter ssa = new SensorSignalAdapter();
+        listViewMain.setLayoutManager(new LinearLayoutManager(this));
         listViewMain.setAdapter(ssa);
     }
 

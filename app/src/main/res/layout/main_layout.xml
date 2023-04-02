@@ -23,12 +23,12 @@
             android:id="@+id/spinnerSensorSelect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/linearLayoutMain"
             android:orientation="vertical">
 
-    </ListView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

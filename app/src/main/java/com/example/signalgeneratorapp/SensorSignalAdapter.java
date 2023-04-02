@@ -3,46 +3,67 @@ package com.example.signalgeneratorapp;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Spinner;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.signalgeneratorapp.signals.Signal;
+import org.jetbrains.annotations.NotNull;
 
-public class SensorSignalAdapter extends BaseAdapter {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.LinkedList;
 
-    private ArrayAdapter<String> sensorNamesAdapter;
-    public SensorSignalAdapter(ArrayAdapter<String> sensorNamesAdapter)
-    {
-        this.sensorNamesAdapter = sensorNamesAdapter;
-    }
+public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapter.ViewHolder> {
 
-    @Override
-    public int getCount() {
-        return 3;
-    }
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder)
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textView;
 
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
+        public ViewHolder(View view) {
+            super(view);
+            // Define click listener for the ViewHolder's View
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null){
-            LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-            view = inflater.inflate(R.layout.sensor_signal_layout, viewGroup, false);
+            textView = (TextView) view.findViewById(R.id.textViewSignalName);
         }
 
-        Spinner sensor = view.findViewById(R.id.spinnerSensor);
-        Spinner signal = view.findViewById(R.id.spinnerSignal);
+        public TextView getTextView() {
+            return textView;
+        }
+    }
 
-        sensor.setAdapter(sensorNamesAdapter);
+    private LinkedList<Signal> signalCollection;
+    public SensorSignalAdapter()
+    {
+        signalCollection = new LinkedList<>(SignalManager.getInstance().getSignalList());
+        SignalManager.getInstance().addSignalsChangedListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                signalCollection = new LinkedList<>(SignalManager.getInstance().getSignalList());
+                notifyDataSetChanged();
+            }
+        });
+    }
 
+    @NonNull
+    @NotNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_signal_row_item, parent, false);
+        return new ViewHolder(view);
+    }
 
-        return view;
+    @Override
+    public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
+        Signal s = signalCollection.get(position);
+        holder.getTextView().setText(s.name);
+    }
+
+    @Override
+    public int getItemCount() {
+        return signalCollection.size();
     }
 }
