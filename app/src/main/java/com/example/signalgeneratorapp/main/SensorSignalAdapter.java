@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp;
+package com.example.signalgeneratorapp.main;
 
 import android.view.View;
 import android.view.LayoutInflater;
@@ -6,12 +6,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.signalgeneratorapp.R;
+import com.example.signalgeneratorapp.SignalManager;
 import com.example.signalgeneratorapp.signals.Signal;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collection;
 import java.util.LinkedList;
 
 public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapter.ViewHolder> {
@@ -34,8 +35,15 @@ public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapte
             return textView;
         }
     }
+    public interface OnClickListener {
+        void onClick(int position, Signal signal);
+    }
 
     private LinkedList<Signal> signalCollection;
+    private OnClickListener onClickListener;
+    public void setOnClickListener(OnClickListener onClickListener){
+        this.onClickListener = onClickListener;
+    }
     public SensorSignalAdapter()
     {
         signalCollection = new LinkedList<>(SignalManager.getInstance().getSignalList());
@@ -60,6 +68,11 @@ public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapte
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Signal s = signalCollection.get(position);
         holder.getTextView().setText(s.name);
+        holder.itemView.setOnClickListener(v -> {
+            if (onClickListener != null){
+                onClickListener.onClick(position, s);
+            }
+        });
     }
 
     @Override

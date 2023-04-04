@@ -89,6 +89,7 @@ public class SignalEditActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signal_edit_layout);
 
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorSpinner = findViewById(R.id.signalEditSensorSpinner);
         textSensorValueX = findViewById(R.id.textViewSensorValueX);
@@ -100,6 +101,13 @@ public class SignalEditActivity extends Activity {
         radioButtonSensorX = findViewById(R.id.radioButtonSensorX);
         radioButtonSensorY = findViewById(R.id.radioButtonSensorY);
         radioButtonSensorZ = findViewById(R.id.radioButtonSensorZ);
+
+        if (getIntent().hasExtra(util.INTENT_SIGNAL_NAME)){
+            String name = getIntent().getStringExtra(util.INTENT_SIGNAL_NAME);
+            editingSignal = SignalManager.getInstance().getSignal(name);
+            EditText et = findViewById(R.id.editTextSignalName);
+            et.setText(name);
+        }
 
         // list all the sensors present in the device
         List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);

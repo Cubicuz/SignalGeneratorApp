@@ -36,4 +36,6 @@ public class util {
             new AbstractMap.SimpleEntry<Integer, Integer>(TYPE_PRESSURE, 1),
             new AbstractMap.SimpleEntry<Integer, Integer>(TYPE_RELATIVE_HUMIDITY, 1)
     );
+
+    public static final String INTENT_SIGNAL_NAME = "intent_signal_name";
 }

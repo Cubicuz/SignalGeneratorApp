@@ -1,7 +1,8 @@
-package com.example.signalgeneratorapp;
+package com.example.signalgeneratorapp.main;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Spinner;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.signalgeneratorapp.*;
 
 import java.util.List;
 
@@ -47,6 +49,13 @@ public class MainActivity extends Activity {
         sensorSpinner.setAdapter(arrayAdapter);
 
         SensorSignalAdapter ssa = new SensorSignalAdapter();
+        ssa.setOnClickListener((position, signal) -> {
+            Intent intent = new Intent(MainActivity.this, SignalEditActivity.class);
+            // Passing the data to the SignalEditActivity
+            intent.putExtra(util.INTENT_SIGNAL_NAME, signal.name);
+            startActivity(intent);
+        });
+
         listViewMain.setLayoutManager(new LinearLayoutManager(this));
         listViewMain.setAdapter(ssa);
     }

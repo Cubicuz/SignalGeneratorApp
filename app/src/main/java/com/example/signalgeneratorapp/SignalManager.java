@@ -23,6 +23,9 @@ public final class SignalManager {
     public Collection<Signal> getSignalList(){
         return signals.values();
     }
+    public Signal getSignal(String name){
+        return signals.get(name);
+    }
 
 
     private final Synthesizer synthesizer;
