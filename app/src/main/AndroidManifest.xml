@@ -20,7 +20,7 @@
                     <action android:name="android.intent.action.MAIN"/>
                 </intent-filter>
             </activity>
-            <activity android:name=".SignalEditActivity"
+            <activity android:name=".SignalEdit.SignalEditActivity"
                       android:exported="false">
 
             </activity>

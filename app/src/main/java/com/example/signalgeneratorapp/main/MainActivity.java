@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.*;
+import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
 
 import java.util.List;
 

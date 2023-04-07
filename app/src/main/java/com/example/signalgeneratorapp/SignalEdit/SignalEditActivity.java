@@ -1,22 +1,21 @@
-package com.example.signalgeneratorapp;
+package com.example.signalgeneratorapp.SignalEdit;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.signalgeneratorapp.R;
+import com.example.signalgeneratorapp.SignalManager;
 import com.example.signalgeneratorapp.signals.Signal;
-import org.jetbrains.annotations.NotNull;
+import com.example.signalgeneratorapp.util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +34,7 @@ public class SignalEditActivity extends Activity {
     private TextView textSensorValueX, textSensorValueY, textSensorValueZ;
     private RadioButton radioButtonSensorX, radioButtonSensorY, radioButtonSensorZ;
     private ProgressBar progressSensorValueX, progressSensorValueY, progressSensorValueZ;
+    private RecyclerView inputPortViewRecyclerView;
     private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -101,6 +101,7 @@ public class SignalEditActivity extends Activity {
         radioButtonSensorX = findViewById(R.id.radioButtonSensorX);
         radioButtonSensorY = findViewById(R.id.radioButtonSensorY);
         radioButtonSensorZ = findViewById(R.id.radioButtonSensorZ);
+        inputPortViewRecyclerView = findViewById(R.id.recyclerViewInputPorts);
 
         if (getIntent().hasExtra(util.INTENT_SIGNAL_NAME)){
             String name = getIntent().getStringExtra(util.INTENT_SIGNAL_NAME);
@@ -141,6 +142,10 @@ public class SignalEditActivity extends Activity {
         radioButtonSensorX.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
         radioButtonSensorY.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
         radioButtonSensorZ.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
+
+        inputPortViewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        SignalEditInputPortAdapter signalEditInputPortAdapter = new SignalEditInputPortAdapter(editingSignal.inputsPorts());
+        inputPortViewRecyclerView.setAdapter(signalEditInputPortAdapter);
     }
 
     private final CompoundButton.OnCheckedChangeListener sensorRadioButtonCheckedChanged = (buttonView, isChecked) -> {
@@ -168,39 +173,5 @@ public class SignalEditActivity extends Activity {
         if (sensorEventListener != null){
             sensorManager.unregisterListener(sensorEventListener);
         }
-    }
-
-    public class InputPortAdapter extends RecyclerView.Adapter<InputPortAdapter.ViewHolder>{
-
-        @NonNull
-        @NotNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.signal_edit_input_port_row_item, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-            // replace content
-
-            holder.InputPortName.setText(editingSignal.inputsPorts().get(position).getName());
-            // need to access connectionManager
-        }
-
-        @Override
-        public int getItemCount() {
-            return editingSignal.inputsPorts().size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final TextView InputPortName, SelectedOutput;
-            public ViewHolder(View view){
-                super(view);
-                InputPortName = view.findViewById(R.id.textViewInputPortName);
-                SelectedOutput = view.findViewById(R.id.textViewSelectedOutput);
-            }
-        }
-
     }
 }
