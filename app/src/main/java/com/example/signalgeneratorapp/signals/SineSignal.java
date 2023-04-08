@@ -16,6 +16,8 @@ public class SineSignal extends Signal {
         inputs.add(oscillator.amplitude);
         inputs.add(oscillator.frequency);
         outputs.add(oscillator.output);
+        oscillator.frequency.setMinimum(0.1);
+        oscillator.frequency.setMaximum(24000);
     }
 
     @Override

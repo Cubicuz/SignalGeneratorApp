@@ -5,6 +5,7 @@ import com.example.signalgeneratorapp.signals.SineSignal;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
+import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.LineOut;
 import com.jsyn.unitgen.SineOscillator;
 
@@ -19,14 +20,11 @@ public final class SignalManager {
 
     private final Map<String, Signal> signals = new HashMap<>();
     private long cnt = 0;
+    private final Map<UnitOutputPort, Signal> outputToSignal = new HashMap<>();
 
-    public Collection<Signal> getSignalList(){
-        return signals.values();
-    }
-    public Signal getSignal(String name){
-        return signals.get(name);
-    }
-
+    public Collection<Signal> getSignalList() { return signals.values(); }
+    public Signal getSignal(String name) { return signals.get(name); }
+    public Signal getSignal(UnitOutputPort uop) { return outputToSignal.get(uop); }
 
     private final Synthesizer synthesizer;
     // The lineout is not part of the signals because it has only one UnitInputPort with 2 dimensions.
@@ -39,6 +37,7 @@ public final class SignalManager {
         }
         E signal = fn.apply(name, synthesizer);
         signals.put(name, signal);
+        signal.outputsPorts().forEach(unitOutputPort -> outputToSignal.put(unitOutputPort, signal));
         cnt++;
         signalsChanged.firePropertyChange("signal count", cnt-1, cnt);
         return signal;

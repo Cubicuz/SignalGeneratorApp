@@ -31,20 +31,20 @@ public class SineSynth {
         // Create the unit generators and add them to the synthesizer
 
         // Split level setting to both oscillators.
-        mAmpJack.firstOutputPort().connect(mOscLeft.amplitude());
-        mAmpJack.firstOutputPort().connect(mOscRight.amplitude());
+        ConnectionManager.getInstance().connect(mOscLeft.amplitude(), mAmpJack.firstOutputPort());
+        ConnectionManager.getInstance().connect(mOscRight.amplitude(), mAmpJack.firstOutputPort());
         mAmpJack.time().set(0.1); // duration of ramp
 
-        schmidtTrigger.firstOutputPort().connect(mAmpJack.input());
-        schmidtTrigger.setLevel().set(0.8);
-        schmidtTrigger.resetLevel().set(0.7);
+        ConnectionManager.getInstance().connect(mAmpJack.input(), schmidtTrigger.firstOutputPort());
+        schmidtTrigger.setLevel().set(0.3);
+        schmidtTrigger.resetLevel().set(0.2);
 
-        metaOscillator.firstOutputPort().connect(schmidtTrigger.input());
+        ConnectionManager.getInstance().connect(schmidtTrigger.input(), metaOscillator.firstOutputPort());
         metaOscillator.frequency().setup(0.01, 1, 1);
 
         // Connect an oscillator to each channel of the LineOut
-        mOscLeft.firstOutputPort().connect(0, sm.lineout(), 0);
-        mOscRight.firstOutputPort().connect(0, sm.lineout(), 1);
+        ConnectionManager.getInstance().connectLineout(mOscLeft.firstOutputPort(), 0);
+        ConnectionManager.getInstance().connectLineout(mOscRight.firstOutputPort(), 1);
 
         // Setup ports for nice UI
         getAmplitudePort().setName("Level");

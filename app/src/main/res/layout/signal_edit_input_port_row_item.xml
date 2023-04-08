@@ -11,15 +11,25 @@
                 android:id="@+id/textViewInputPortName"
                 android:text="input port name"
                 android:textSize="20sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
         <TextView
-                android:id="@+id/textViewSelectedOutput"
+                android:id="@+id/textViewConnectedOutput"
                 android:text="selected Input"
                 android:textSize="20sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="visible"
+        />
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned|numberDecimal"
+                android:ems="6"
+                android:id="@+id/editTextConstantValue"
+                android:layout_weight="1"
+                android:singleLine="true"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

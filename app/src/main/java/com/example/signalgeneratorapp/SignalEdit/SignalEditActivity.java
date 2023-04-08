@@ -12,10 +12,12 @@ import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.signalgeneratorapp.ConnectionManager;
 import com.example.signalgeneratorapp.R;
 import com.example.signalgeneratorapp.SignalManager;
 import com.example.signalgeneratorapp.signals.Signal;
 import com.example.signalgeneratorapp.util;
+import com.google.android.material.chip.Chip;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,7 @@ public class SignalEditActivity extends Activity {
     private TextView textSensorValueX, textSensorValueY, textSensorValueZ;
     private RadioButton radioButtonSensorX, radioButtonSensorY, radioButtonSensorZ;
     private ProgressBar progressSensorValueX, progressSensorValueY, progressSensorValueZ;
+    private Chip chipLineoutLeft, chipLineoutRight;
     private RecyclerView inputPortViewRecyclerView;
     private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
@@ -102,6 +105,8 @@ public class SignalEditActivity extends Activity {
         radioButtonSensorY = findViewById(R.id.radioButtonSensorY);
         radioButtonSensorZ = findViewById(R.id.radioButtonSensorZ);
         inputPortViewRecyclerView = findViewById(R.id.recyclerViewInputPorts);
+        chipLineoutLeft = findViewById(R.id.chipLeftAudioChannel);
+        chipLineoutRight = findViewById(R.id.chipRightAudioChannel);
 
         if (getIntent().hasExtra(util.INTENT_SIGNAL_NAME)){
             String name = getIntent().getStringExtra(util.INTENT_SIGNAL_NAME);
@@ -109,6 +114,7 @@ public class SignalEditActivity extends Activity {
             EditText et = findViewById(R.id.editTextSignalName);
             et.setText(name);
         }
+
 
         // list all the sensors present in the device
         List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -146,6 +152,29 @@ public class SignalEditActivity extends Activity {
         inputPortViewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         SignalEditInputPortAdapter signalEditInputPortAdapter = new SignalEditInputPortAdapter(editingSignal.inputsPorts());
         inputPortViewRecyclerView.setAdapter(signalEditInputPortAdapter);
+
+        chipLineoutLeft.setChecked(ConnectionManager.getInstance().isLineoutConnected(editingSignal.firstOutputPort(), 0));
+        chipLineoutRight.setChecked(ConnectionManager.getInstance().isLineoutConnected(editingSignal.firstOutputPort(), 1));
+        chipLineoutLeft.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    ConnectionManager.getInstance().connectLineout(editingSignal.firstOutputPort(), 0);
+                } else {
+                    ConnectionManager.getInstance().disconnectLineout(editingSignal.firstOutputPort(), 0);
+                }
+            }
+        });
+        chipLineoutRight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    ConnectionManager.getInstance().connectLineout(editingSignal.firstOutputPort(), 1);
+                } else {
+                    ConnectionManager.getInstance().disconnectLineout(editingSignal.firstOutputPort(), 1);
+                }
+            }
+        });
     }
 
     private final CompoundButton.OnCheckedChangeListener sensorRadioButtonCheckedChanged = (buttonView, isChecked) -> {

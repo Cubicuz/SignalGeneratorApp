@@ -6,6 +6,7 @@ import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class ConnectionManager {
             outputToInputs.put(uop, new LinkedList<>(List.of(uip)));
         }
     }
+
 
     public void disconnect(UnitInputPort uip){
         if (inputToOutput.containsKey(uip)){
@@ -71,11 +73,37 @@ public class ConnectionManager {
         return inputToOutput.get(uip);
     }
 
+    // lineout interface
+    private LinkedList<HashSet> lineoutConnections = new LinkedList<>();
+    public void connectLineout(UnitOutputPort uop, int leftRight){
+        if (lineoutConnections.get(leftRight).contains(uop)){
+            // connection already there
+            return;
+        }
+        uop.connect(0, SignalManager.getInstance().lineout(), leftRight);
+        lineoutConnections.get(leftRight).add(uop);
+    }
+
+    public boolean isLineoutConnected(UnitOutputPort uop, int leftRight){
+        return lineoutConnections.get(leftRight).contains(uop);
+    }
+
+    public void disconnectLineout(UnitOutputPort uop, int leftRight){
+        if (lineoutConnections.get(leftRight).contains(uop)){
+            uop.disconnect(0, SignalManager.getInstance().lineout(), leftRight);
+            lineoutConnections.get(leftRight).remove(uop);
+        }
+    }
+
+
     public LinkedList<UnitInputPort> getConnected(UnitOutputPort uop){
         return outputToInputs.get(uop);
     }
 
-    private ConnectionManager(){    }
+    private ConnectionManager(){
+        lineoutConnections.add(new HashSet<>());
+        lineoutConnections.add(new HashSet<>());
+    }
     private static ConnectionManager instance;
     public static ConnectionManager getInstance(){
         if(instance != null){
