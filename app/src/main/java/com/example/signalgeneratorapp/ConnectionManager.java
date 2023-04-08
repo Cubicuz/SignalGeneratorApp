@@ -1,5 +1,6 @@
 package com.example.signalgeneratorapp;
 
+import com.example.signalgeneratorapp.signals.SensorOutput;
 import com.example.signalgeneratorapp.signals.Signal;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
@@ -8,23 +9,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UnitPortConnectionManager {
+public class ConnectionManager {
 
-    public class UnitInputPortAbstraction{
-        public final Signal signal;
-        public final UnitInputPort unitInputPort;
-        protected UnitInputPortAbstraction(Signal signal, UnitInputPort unitInputPort){
-            this.signal = signal;
-            this.unitInputPort = unitInputPort;
-        }
-    }
-    private HashMap<Signal, UnitInputPortAbstraction> signalToAbstraction;
-    private HashMap<UnitInputPort, UnitInputPortAbstraction> unitInputPortToAbstraction;
 
     // Any output can be connected to many inputs.
-    private HashMap<UnitOutputPort, LinkedList<UnitInputPort>> outputToInputs;
+    private HashMap<UnitOutputPort, LinkedList<UnitInputPort>> outputToInputs = new HashMap<>();
     // Any input can be connected to one output
-    private HashMap<UnitInputPort, UnitOutputPort> inputToOutput;
+    private HashMap<UnitInputPort, UnitOutputPort> inputToOutput = new HashMap<>();
 
     public void connect(UnitInputPort uip, UnitOutputPort uop){
         if (inputToOutput.containsKey(uip)){
@@ -84,12 +75,12 @@ public class UnitPortConnectionManager {
         return outputToInputs.get(uop);
     }
 
-    private UnitPortConnectionManager(){    }
-    private static UnitPortConnectionManager instance;
-    public static UnitPortConnectionManager getInstance(){
+    private ConnectionManager(){    }
+    private static ConnectionManager instance;
+    public static ConnectionManager getInstance(){
         if(instance != null){
             return instance;
         }
-        return instance = new UnitPortConnectionManager();
+        return instance = new ConnectionManager();
     }
 }

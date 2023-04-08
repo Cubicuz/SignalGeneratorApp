@@ -8,9 +8,14 @@ import android.hardware.SensorManager;
 import android.widget.ProgressBar;
 import com.example.signalgeneratorapp.util;
 import com.jsyn.Synthesizer;
+import com.jsyn.ports.ConnectableInput;
+import com.jsyn.ports.ConnectableOutput;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.LinearRamp;
+import com.jsyn.unitgen.UnitSink;
+import com.softsynth.shared.time.TimeStamp;
+import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -23,6 +28,8 @@ public class SensorOutput{
     private final int dimensions;
     public String name;
 
+    private final LinkedList<SensorOutputDimension> outputDimensions = new LinkedList<>();
+
     private LinkedList<Set<UnitInputPort>> connectedPorts = new LinkedList<>();
 
     public SensorOutput(@NotNull Sensor sensor) {
@@ -32,6 +39,7 @@ public class SensorOutput{
 
         for (int i = 0; i< dimensions; i++) {
             connectedPorts.add(new HashSet<>());
+            outputDimensions.add(new SensorOutputDimension(i));
         }
     }
 
@@ -94,5 +102,42 @@ public class SensorOutput{
         sensorManager.unregisterListener(sensorEventListener);
     }
 
+    public LinkedList<SensorOutputDimension> getSensorOutputDimensions(){
+        return outputDimensions;
+    }
 
+    public SensorOutputDimension getSensorOutputDimension(int dimension){
+        if (dimension >= dimensions){
+            return null;
+        }
+        return outputDimensions.get(dimension);
+    }
+
+    public class SensorOutputDimension extends UnitOutputPort {
+        public final int dimension;
+        public void connect(UnitInputPort unitInputPort){
+            SensorOutput.this.connect(unitInputPort, dimension);
+        }
+        public void disconnect(UnitInputPort unitInputPort){
+            SensorOutput.this.disconnect(unitInputPort, dimension);
+        }
+        public void connect(int var1, UnitInputPort var2, int var3) {throw new NotImplementedError("this wasnt planned");}
+        public void connect(int var1, UnitInputPort var2, int var3, TimeStamp var4) {throw new NotImplementedError("this wasnt planned");}
+        public void connect(ConnectableInput var1) {
+            throw new NotImplementedError("this wasnt planned");
+        }
+        public void connect(UnitSink var1) {
+            throw new NotImplementedError("this wasnt planned");
+        }
+        public void disconnect(int var1, UnitInputPort var2, int var3) {throw new NotImplementedError("this wasnt planned");}
+        public void disconnect(int var1, UnitInputPort var2, int var3, TimeStamp var4) {throw new NotImplementedError("this wasnt planned");}
+        public void disconnect(ConnectableInput var1) {
+            throw new NotImplementedError("this wasnt planned");
+        }
+
+        protected SensorOutputDimension(int dimension){
+            super(SensorOutput.this.name + " " + dimension);
+            this.dimension = dimension;
+        }
+    }
 }
