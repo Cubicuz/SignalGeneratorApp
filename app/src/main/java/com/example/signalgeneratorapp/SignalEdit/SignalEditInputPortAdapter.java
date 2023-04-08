@@ -1,10 +1,10 @@
 package com.example.signalgeneratorapp.SignalEdit;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.ConnectionManager;
@@ -19,9 +19,19 @@ import java.util.LinkedList;
 public class SignalEditInputPortAdapter extends RecyclerView.Adapter<SignalEditInputPortAdapter.ViewHolder> {
 
     private LinkedList<UnitInputPort> inputPorts;
+    private LinkedList<UnitOutputPort> allOutputPorts = new LinkedList<>();
+    private ArrayAdapter<String> adapterAllOutputPorts;
 
-    public SignalEditInputPortAdapter(LinkedList<UnitInputPort> inputPorts){
+    public SignalEditInputPortAdapter(LinkedList<UnitInputPort> inputPorts, Context parentContext){
+
         this.inputPorts = inputPorts;
+
+        adapterAllOutputPorts = new ArrayAdapter<>(parentContext, android.R.layout.simple_list_item_1);
+        SignalManager.getInstance().getSignalList().forEach(signal -> signal.outputsPorts().forEach(unitOutputPort -> {
+            allOutputPorts.add(unitOutputPort);
+            String outputName = (unitOutputPort.getName() == "Output") ? signal.name : (signal.name + "." + unitOutputPort.getName());
+            adapterAllOutputPorts.add(outputName);
+        }));
     }
 
     @NonNull
@@ -44,11 +54,35 @@ public class SignalEditInputPortAdapter extends RecyclerView.Adapter<SignalEditI
                 uip.set(Double.valueOf(holder.EditConstantValue.getText().toString()));
             }
         });
+        holder.ConnectedOutput.setAdapter(adapterAllOutputPorts);
         if (uop != null){
-            String signalName = SignalManager.getInstance().getSignal(uop).name;
-            String outputName = (uop.getName() == "Output") ? signalName : (signalName + "." + uop.getName());
-            holder.ConnectedOutput.setText(outputName);
+            holder.ConnectedOutput.setSelection(allOutputPorts.indexOf(uop));
         }
+        holder.ConnectedOutput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                UnitOutputPort olduop = ConnectionManager.getInstance().getConnected(uip);
+                UnitOutputPort newuop = allOutputPorts.get(position);
+                if (olduop != newuop){
+                    ConnectionManager.getInstance().disconnect(uip);
+                    ConnectionManager.getInstance().connect(uip, newuop);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                throw new RuntimeException("is nothing selected possible???");
+            }
+        });
+        holder.InputPortName.setOnClickListener(v -> {
+            holder.SetConnected(!holder.connected);
+            if (holder.connected){
+                int index = holder.ConnectedOutput.getSelectedItemPosition();
+                ConnectionManager.getInstance().connect(uip, allOutputPorts.get(index));
+            } else {
+                ConnectionManager.getInstance().disconnect(uip);
+            }
+        });
     }
 
     @Override
@@ -57,15 +91,15 @@ public class SignalEditInputPortAdapter extends RecyclerView.Adapter<SignalEditI
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView InputPortName, ConnectedOutput;
+        public final TextView InputPortName;
+        public final Spinner ConnectedOutput;
         public final EditText EditConstantValue;
         private boolean connected;
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             InputPortName = itemView.findViewById(R.id.textViewInputPortName);
-            ConnectedOutput = itemView.findViewById(R.id.textViewConnectedOutput);
+            ConnectedOutput = itemView.findViewById(R.id.spinnerConnectedOutput);
             EditConstantValue = itemView.findViewById(R.id.editTextConstantValue);
-            InputPortName.setOnClickListener(v -> SetConnected(!connected));
         }
 
         public boolean IsConnected(){return connected;}

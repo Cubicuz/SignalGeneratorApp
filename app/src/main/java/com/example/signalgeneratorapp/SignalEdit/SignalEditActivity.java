@@ -150,7 +150,7 @@ public class SignalEditActivity extends Activity {
         radioButtonSensorZ.setOnCheckedChangeListener(sensorRadioButtonCheckedChanged);
 
         inputPortViewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        SignalEditInputPortAdapter signalEditInputPortAdapter = new SignalEditInputPortAdapter(editingSignal.inputsPorts());
+        SignalEditInputPortAdapter signalEditInputPortAdapter = new SignalEditInputPortAdapter(editingSignal.inputsPorts(), this.getApplicationContext());
         inputPortViewRecyclerView.setAdapter(signalEditInputPortAdapter);
 
         chipLineoutLeft.setChecked(ConnectionManager.getInstance().isLineoutConnected(editingSignal.firstOutputPort(), 0));

@@ -1,6 +1,5 @@
 package com.example.signalgeneratorapp;
 
-import com.example.signalgeneratorapp.signals.SensorOutput;
 import com.example.signalgeneratorapp.signals.Signal;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
@@ -74,7 +73,7 @@ public class ConnectionManager {
     }
 
     // lineout interface
-    private LinkedList<HashSet> lineoutConnections = new LinkedList<>();
+    private LinkedList<HashSet<UnitOutputPort>> lineoutConnections = new LinkedList<>();
     public void connectLineout(UnitOutputPort uop, int leftRight){
         if (lineoutConnections.get(leftRight).contains(uop)){
             // connection already there
