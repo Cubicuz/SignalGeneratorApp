@@ -29,7 +29,7 @@ public class ConnectionManager {
         }
 
         // add new connection
-        uip.connect(uop);
+        uop.connect(uip);
         inputToOutput.put(uip, uop);
         if (outputToInputs.containsKey(uop)){
             outputToInputs.get(uop).add(uip);
@@ -45,7 +45,7 @@ public class ConnectionManager {
             UnitOutputPort uop = inputToOutput.get(uip);
 
             // remove the existing connection
-            uip.disconnect(uop);
+            uop.disconnect(uip);
             outputToInputs.get(uop).remove(uip);
             if (outputToInputs.get(uop).isEmpty()){
                 outputToInputs.remove(uop);

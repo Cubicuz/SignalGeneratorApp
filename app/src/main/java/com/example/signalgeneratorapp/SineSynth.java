@@ -55,13 +55,6 @@ public class SineSynth {
         getRightFrequencyPort().setup(100.0, 400.0, 1000.0);
     }
 
-    public void start() {
-        SignalManager.getInstance().startAudio();
-    }
-
-    public void stop() {
-        SignalManager.getInstance().stopAudio();
-    }
 
     public UnitInputPort getAmplitudePort() { return mAmpJack.input(); }
     public UnitInputPort getLeftFrequencyPort() { return mOscLeft.frequency(); }

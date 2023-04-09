@@ -27,12 +27,14 @@ public class SensorOutput{
     private final Sensor sensor;
     private final int dimensions;
     public String name;
+    private int connectedCounter = 0;
+    private Context context;
 
     private final LinkedList<SensorOutputDimension> outputDimensions = new LinkedList<>();
 
     private LinkedList<Set<UnitInputPort>> connectedPorts = new LinkedList<>();
 
-    public SensorOutput(@NotNull Sensor sensor) {
+    public SensorOutput(@NotNull Sensor sensor, Context context) {
         name = sensor.getName();
         this.sensor = sensor;
         dimensions = SensorDimensions.getOrDefault(sensor.getType(), 1);
@@ -41,22 +43,36 @@ public class SensorOutput{
             connectedPorts.add(new HashSet<>());
             outputDimensions.add(new SensorOutputDimension(i));
         }
+        this.context = context;
     }
 
     public void connect(UnitInputPort unitInputPort, int dimension){
         if (dimension >= dimensions){
             throw new RuntimeException("illegal dimension " + dimension + " on sensor " + sensor.getName());
         }
-        connectedPorts.get(dimension).add(unitInputPort);
+        if (connectedPorts.get(dimension).add(unitInputPort)){
+            connectedCounter++;
+            if (connectedCounter == 1){
+                RegisterListener();
+            }
+        }
     }
 
     public void disconnect(UnitInputPort unitInputPort, int dimension){
         if (dimension >= dimensions){
             throw new RuntimeException("illegal dimension " + dimension + " on sensor " + sensor.getName());
         }
-        connectedPorts.get(dimension).remove(unitInputPort);
+        if(connectedPorts.get(dimension).remove(unitInputPort)){
+            connectedCounter--;
+            if (connectedCounter == 0){
+                UnregisterListener();
+            }
+        }
     }
 
+    public boolean isSensorInUse(){
+        return connectedCounter > 0;
+    }
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
@@ -93,11 +109,11 @@ public class SensorOutput{
 
 
     };
-    public void RegisterListener(Context context){
+    public void RegisterListener(){
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
-    public void UnregisterListener(Context context){
+    public void UnregisterListener(){
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensorManager.unregisterListener(sensorEventListener);
     }
@@ -115,9 +131,11 @@ public class SensorOutput{
 
     public class SensorOutputDimension extends UnitOutputPort {
         public final int dimension;
+        @Override
         public void connect(UnitInputPort unitInputPort){
             SensorOutput.this.connect(unitInputPort, dimension);
         }
+        @Override
         public void disconnect(UnitInputPort unitInputPort){
             SensorOutput.this.disconnect(unitInputPort, dimension);
         }

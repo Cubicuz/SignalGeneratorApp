@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.ConnectionManager;
 import com.example.signalgeneratorapp.R;
+import com.example.signalgeneratorapp.SensorOutputManager;
 import com.example.signalgeneratorapp.SignalManager;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
@@ -32,6 +33,13 @@ public class SignalEditInputPortAdapter extends RecyclerView.Adapter<SignalEditI
             String outputName = (unitOutputPort.getName() == "Output") ? signal.name : (signal.name + "." + unitOutputPort.getName());
             adapterAllOutputPorts.add(outputName);
         }));
+        SensorOutputManager.getInstance().getSensorOutputList().forEach(
+                sensorOutput -> sensorOutput.getSensorOutputDimensions().forEach(
+                        sensorOutputDimension -> {
+            adapterAllOutputPorts.add(sensorOutput.name + " " + sensorOutputDimension.dimension);
+            allOutputPorts.add(sensorOutputDimension);
+        }));
+
     }
 
     @NonNull

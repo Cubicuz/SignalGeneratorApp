@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+        SensorOutputManager.createInstance(getApplicationContext());
 
         mSineSynth = new SineSynth();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -36,7 +37,7 @@ public class MainActivity extends Activity {
         listViewMain = findViewById(R.id.linearLayoutMain);
 
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
-        sensorInput = new SensorInput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, mSineSynth.getLeftFrequencyPort(), mSineSynth.getRightFrequencyPort(), findViewById(R.id.textViewX), findViewById(R.id.textViewY), findViewById(R.id.textViewZ));
+        sensorInput = new SensorInput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, findViewById(R.id.textViewX), findViewById(R.id.textViewY), findViewById(R.id.textViewZ));
 
         // list all the sensors present in the device
         List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -64,14 +65,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mSineSynth.start();
+        SensorOutputManager.getInstance().start();
+        SignalManager.getInstance().startAudio();
         sensorManager.registerListener(sensorInput, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSineSynth.stop();
+        SignalManager.getInstance().stopAudio();
         sensorManager.unregisterListener(sensorInput);
+        SensorOutputManager.getInstance().stop();
     }
 }
