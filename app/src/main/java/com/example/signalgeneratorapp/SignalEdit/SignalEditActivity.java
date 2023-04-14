@@ -32,6 +32,8 @@ public class SignalEditActivity extends Activity {
 
     private Signal editingSignal;
 
+    private EditText editTextSignalName;
+
 
     private TextView textSensorValueX, textSensorValueY, textSensorValueZ;
     private RadioButton radioButtonSensorX, radioButtonSensorY, radioButtonSensorZ;
@@ -107,12 +109,14 @@ public class SignalEditActivity extends Activity {
         inputPortViewRecyclerView = findViewById(R.id.recyclerViewInputPorts);
         chipLineoutLeft = findViewById(R.id.chipLeftAudioChannel);
         chipLineoutRight = findViewById(R.id.chipRightAudioChannel);
+        editTextSignalName = findViewById(R.id.editTextSignalName);
+
+
 
         if (getIntent().hasExtra(util.INTENT_SIGNAL_NAME)){
             String name = getIntent().getStringExtra(util.INTENT_SIGNAL_NAME);
             editingSignal = SignalManager.getInstance().getSignal(name);
-            EditText et = findViewById(R.id.editTextSignalName);
-            et.setText(name);
+            editTextSignalName.setText(name);
         }
 
 
@@ -191,6 +195,7 @@ public class SignalEditActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        editTextSignalName.clearFocus();
         if (sensorEventListener != null){
             sensorManager.registerListener(sensorEventListener, selectedSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }

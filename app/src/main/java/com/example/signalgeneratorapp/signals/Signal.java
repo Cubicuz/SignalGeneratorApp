@@ -1,5 +1,6 @@
 package com.example.signalgeneratorapp.signals;
 
+import com.example.signalgeneratorapp.ConnectionManager;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
@@ -27,4 +28,9 @@ public abstract class Signal {
     }
     public UnitOutputPort firstOutputPort() {return outputs.getFirst(); }
 
+    @Override
+    protected void finalize() throws Throwable {
+        ConnectionManager.getInstance().disconnect(this);
+        super.finalize();
+    }
 }
