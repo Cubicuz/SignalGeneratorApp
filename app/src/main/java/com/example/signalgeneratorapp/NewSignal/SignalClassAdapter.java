@@ -75,17 +75,18 @@ public class SignalClassAdapter extends RecyclerView.Adapter<SignalClassAdapter.
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         holder.getSignalClassName().setText(SignalClassNames.get(position));
+        int selectedColor = holder.itemView.getResources().getColor(com.google.android.material.R.color.highlighted_text_material_dark);
         if (selectedIndex == position){
-            holder.getSignalClassName().setSelected(true);
-
+            holder.signalClassName.setBackgroundColor(selectedColor);
+            selectedView = holder;
         }
         holder.itemView.setOnClickListener(v -> {
             if (selectedView != null && selectedView != holder){
                 selectedView.signalClassName.setBackgroundColor(holder.itemView.getResources().getColor(R.color.white));
             }
             selectedView = holder;
-            selectedIndex = position;
-            holder.signalClassName.setBackgroundColor(holder.itemView.getResources().getColor(com.google.android.material.R.color.abc_color_highlight_material));
+            selectedIndex = holder.getAdapterPosition();
+            holder.signalClassName.setBackgroundColor(selectedColor);
         });
     }
 
@@ -94,5 +95,7 @@ public class SignalClassAdapter extends RecyclerView.Adapter<SignalClassAdapter.
         return SignalClassNames.size();
     }
 
-
+    public BiFunction<String, Synthesizer, Signal> getSelectedConstructor(){
+        return SignalConstructors.get(selectedIndex);
+    }
 }

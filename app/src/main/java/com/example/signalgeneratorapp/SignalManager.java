@@ -24,6 +24,7 @@ public final class SignalManager {
 
     public Collection<Signal> getSignalList() { return signals.values(); }
     public Signal getSignal(String name) { return signals.get(name); }
+    public boolean signalNameExists(String name) { return signals.containsKey(name); }
     public Signal getSignal(UnitOutputPort uop) { return outputToSignal.get(uop); }
 
     private final Synthesizer synthesizer;
