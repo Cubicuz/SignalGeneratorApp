@@ -19,7 +19,11 @@ public class SineSignal extends Signal {
         oscillator.frequency.setMinimum(0.1);
         oscillator.frequency.setMaximum(24000);
     }
-
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "sine";
     @Override
     protected void finalize() throws Throwable {
         synthesizer.remove(oscillator);

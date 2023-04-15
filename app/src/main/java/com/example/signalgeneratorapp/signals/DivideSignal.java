@@ -13,7 +13,11 @@ public class DivideSignal extends Signal{
         inputs.add(divide.inputB);
         outputs.add(divide.output);
     }
-
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "divide";
     @Override
     protected void finalize() throws Throwable {
         synthesizer.remove(divide);

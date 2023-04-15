@@ -7,6 +7,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
@@ -33,7 +35,7 @@ public class SignalEditActivity extends Activity {
     private Signal editingSignal;
 
     private EditText editTextSignalName;
-
+    private TextView textViewSignalType;
 
     private TextView textSensorValueX, textSensorValueY, textSensorValueZ;
     private RadioButton radioButtonSensorX, radioButtonSensorY, radioButtonSensorZ;
@@ -110,13 +112,16 @@ public class SignalEditActivity extends Activity {
         chipLineoutLeft = findViewById(R.id.chipLeftAudioChannel);
         chipLineoutRight = findViewById(R.id.chipRightAudioChannel);
         editTextSignalName = findViewById(R.id.editTextSignalName);
-
+        textViewSignalType = findViewById(R.id.textViewSignalType);
 
 
         if (getIntent().hasExtra(util.INTENT_SIGNAL_NAME)){
             String name = getIntent().getStringExtra(util.INTENT_SIGNAL_NAME);
             editingSignal = SignalManager.getInstance().getSignal(name);
             editTextSignalName.setText(name);
+            textViewSignalType.setText("Signaltype: " + editingSignal.getType());
+        } else {
+            throw new RuntimeException("didn't expect nothing to edit");
         }
 
 
@@ -179,6 +184,33 @@ public class SignalEditActivity extends Activity {
                 }
             }
         });
+        editTextSignalName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String signalName = s.toString();
+                if (SignalManager.getInstance().signalNameExists(signalName)) {
+                    editTextSignalName.setError("Name already exists!");
+                }
+            }
+        });
+        editTextSignalName.setOnFocusChangeListener((v, hasFocus) -> {
+            if(!hasFocus){
+                String signalName = editTextSignalName.getText().toString();
+                if (!SignalManager.getInstance().signalNameExists(signalName)){
+                    SignalManager.getInstance().changeSignalName(editingSignal.name, signalName);
+                }
+            }
+        });
     }
 
     private final CompoundButton.OnCheckedChangeListener sensorRadioButtonCheckedChanged = (buttonView, isChecked) -> {
@@ -208,4 +240,6 @@ public class SignalEditActivity extends Activity {
             sensorManager.unregisterListener(sensorEventListener);
         }
     }
+
+
 }

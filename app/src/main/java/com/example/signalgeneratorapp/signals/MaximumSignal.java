@@ -12,7 +12,11 @@ public class MaximumSignal extends Signal{
         inputs.add(maximum.inputB);
         outputs.add(maximum.output);
     }
-
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "maximum";
     @Override
     protected void finalize() throws Throwable {
         synthesizer.remove(maximum);

@@ -13,7 +13,11 @@ public class MinimumSignal extends Signal{
         inputs.add(minimum.inputB);
         outputs.add(minimum.output);
     }
-
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "minimum";
     @Override
     protected void finalize() throws Throwable {
         synthesizer.remove(minimum);

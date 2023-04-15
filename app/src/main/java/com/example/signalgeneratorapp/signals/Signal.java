@@ -27,7 +27,7 @@ public abstract class Signal {
         return outputs;
     }
     public UnitOutputPort firstOutputPort() {return outputs.getFirst(); }
-
+    public abstract String getType();
     @Override
     protected void finalize() throws Throwable {
         ConnectionManager.getInstance().disconnect(this);

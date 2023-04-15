@@ -13,7 +13,11 @@ public class LinearRampSignal extends Signal{
         inputs.add(ramp.time);
         outputs.add(ramp.output);
     }
-
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "linearRamp";
     public UnitInputPort input() {
         return ramp.input;
     }

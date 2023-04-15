@@ -36,31 +36,31 @@ public class SignalClassAdapter extends RecyclerView.Adapter<SignalClassAdapter.
 
 
     public SignalClassAdapter(){
-        SignalClassNames.add("Add Signal");
+        SignalClassNames.add(AddSignal.type);
         SignalConstructors.add(AddSignal::new);
 
-        SignalClassNames.add("Compare Signal");
+        SignalClassNames.add(Compare.type);
         SignalConstructors.add(Compare::new);
 
-        SignalClassNames.add("Divide Signal");
+        SignalClassNames.add(DivideSignal.type);
         SignalConstructors.add(DivideSignal::new);
 
-        SignalClassNames.add("Linear Ramp Signal");
+        SignalClassNames.add(LinearRampSignal.type);
         SignalConstructors.add(LinearRampSignal::new);
 
-        SignalClassNames.add("Maximum Signal");
+        SignalClassNames.add(MaximumSignal.type);
         SignalConstructors.add(MaximumSignal::new);
 
-        SignalClassNames.add("Minimum Signal");
+        SignalClassNames.add(MinimumSignal.type);
         SignalConstructors.add(MinimumSignal::new);
 
-        SignalClassNames.add("Sawtooth Signal");
+        SignalClassNames.add(SawtoothSignal.type);
         SignalConstructors.add(SawtoothSignal::new);
 
-        SignalClassNames.add("Schmidt Trigger Signal");
+        SignalClassNames.add(SchmidtTriggerSignal.type);
         SignalConstructors.add(SchmidtTriggerSignal::new);
 
-        SignalClassNames.add("Sine Signal");
+        SignalClassNames.add(SineSignal.type);
         SignalConstructors.add(SineSignal::new);
     }
 

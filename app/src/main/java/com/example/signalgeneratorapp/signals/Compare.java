@@ -15,6 +15,12 @@ public class Compare extends Signal{
     }
 
     @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "add";
+
+    @Override
     protected void finalize() throws Throwable {
         synthesizer.remove(compare);
         super.finalize();

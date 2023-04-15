@@ -15,6 +15,11 @@ public class SchmidtTriggerSignal extends Signal{
         inputs.add(schmidtTrigger.resetLevel);
         outputs.add(schmidtTrigger.output);
     }
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "schmidtTrigger";
     public UnitInputPort input(){
         return schmidtTrigger.input;
     }
@@ -23,5 +28,11 @@ public class SchmidtTriggerSignal extends Signal{
     }
     public UnitInputPort resetLevel(){
         return schmidtTrigger.resetLevel;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        synthesizer.remove(schmidtTrigger);
+        super.finalize();
     }
 }

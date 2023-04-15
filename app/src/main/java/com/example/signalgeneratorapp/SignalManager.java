@@ -63,6 +63,7 @@ public final class SignalManager {
             sig.name = to;
             signals.put(to, sig);
             // call event or so
+            signalsChanged.firePropertyChange("signal name", from, to);
         }
     }
 

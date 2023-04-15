@@ -13,11 +13,21 @@ public class SawtoothSignal extends Signal{
         inputs.add(sawtoothOscillator.frequency);
         outputs.add(sawtoothOscillator.output);
     }
-
+    @Override
+    public String getType() {
+        return type;
+    }
+    public static final String type = "sawtooth";
     public UnitInputPort amplitude(){
         return sawtoothOscillator.amplitude;
     }
     public UnitInputPort frequency(){
         return sawtoothOscillator.frequency;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        synthesizer.remove(sawtoothOscillator);
+        super.finalize();
     }
 }
