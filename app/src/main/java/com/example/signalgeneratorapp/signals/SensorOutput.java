@@ -104,6 +104,8 @@ public class SensorOutput{
 
             double output = (value - minSensor) / rangeSensor * rangePort + minPort;
             port.set(output);
+
+
             return output;
         }
 
@@ -131,6 +133,10 @@ public class SensorOutput{
 
     public class SensorOutputDimension extends UnitOutputPort {
         public final int dimension;
+
+        public double usermin=-Double.MAX_VALUE;
+        public double usermax=Double.MAX_VALUE;
+
         @Override
         public void connect(UnitInputPort unitInputPort){
             SensorOutput.this.connect(unitInputPort, dimension);
