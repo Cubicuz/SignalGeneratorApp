@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+              android:orientation="vertical"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <TextView
+                android:text="Sensor Preview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="25sp"/>
+        <Spinner
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/signalEditSensorSpinner"
+                android:minHeight="40dip"/>
+    </TableRow>
+    <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:stretchColumns="0"
+            android:dividerPadding="5dp">
+
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:id="@+id/progressBarSensorValueX"
+                    android:paddingHorizontal="10dp" android:max="100"/>
+            <TextView
+                    android:text="0.00"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewSensorValueX"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/progressBarSensorValueY"
+                    android:paddingHorizontal="10dp" android:max="100"/>
+            <TextView
+                    android:text="0.00"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewSensorValueY"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/progressBarSensorValueZ"
+                    android:paddingHorizontal="10dp" android:max="100"/>
+            <TextView
+                    android:text="0.00"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewSensorValueZ"/>
+        </TableRow>
+    </TableLayout>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User limits:"
+            android:gravity="center"
+            android:textSize="20sp"
+    />
+    <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="X min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonXMin"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:ems="5"
+                    android:id="@+id/editTextNumberSigned2"/>
+            <Button
+                    android:text="reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSensorEditResetXMin"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="X max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonXMax"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:ems="5"
+                    android:id="@+id/editTextNumberSigned3"/>
+            <Button
+                    android:text="reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSensorEditResetXMax"/>
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
