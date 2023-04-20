@@ -28,11 +28,11 @@ public class SensorOutput{
     private final int dimensions;
     public String name;
     private int connectedCounter = 0;
-    private Context context;
+    private final Context context;
 
     private final LinkedList<SensorOutputDimension> outputDimensions = new LinkedList<>();
 
-    private LinkedList<Set<UnitInputPort>> connectedPorts = new LinkedList<>();
+    private final LinkedList<Set<UnitInputPort>> connectedPorts = new LinkedList<>();
 
     public SensorOutput(@NotNull Sensor sensor, Context context) {
         name = sensor.getName();
@@ -82,7 +82,7 @@ public class SensorOutput{
             }
             for (int i = 0; i<dimensions; i++){
                 int finalI = i;
-                connectedPorts.get(i).forEach(unitInputPort -> {convertAndSetSensorToPortValue(event.values[finalI], unitInputPort);}
+                connectedPorts.get(i).forEach(unitInputPort -> {convertAndSetSensorToPortValue(event.values[finalI], unitInputPort, getSensorOutputDimension(finalI));}
                 );
             }
         }
@@ -90,14 +90,16 @@ public class SensorOutput{
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-        private double convertAndSetSensorToPortValue(double value, UnitInputPort port){
+        private double convertAndSetSensorToPortValue(double value, UnitInputPort port, SensorOutputDimension sensorOutputDimension){
             boolean negative = util.SensorsWithNegativeRange.contains(sensor.getType());
 
             double maxPort = port.getMaximum();
             double minPort = port.getMinimum();
 
-            double maxSensor = sensor.getMaximumRange();
-            double minSensor = negative ? -maxSensor : 0;
+            //double maxSensor = sensor.getMaximumRange();
+            //double minSensor = negative ? -maxSensor : 0;
+            double maxSensor = sensorOutputDimension.usermax;
+            double minSensor = sensorOutputDimension.usermin;
 
             double rangePort = maxPort - minPort;
             double rangeSensor = negative ? 2*maxSensor : maxSensor;
@@ -134,8 +136,8 @@ public class SensorOutput{
     public class SensorOutputDimension extends UnitOutputPort {
         public final int dimension;
 
-        public double usermin=-Double.MAX_VALUE;
-        public double usermax=Double.MAX_VALUE;
+        public double usermin= util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
+        public double usermax=sensor.getMaximumRange();
 
         @Override
         public void connect(UnitInputPort unitInputPort){

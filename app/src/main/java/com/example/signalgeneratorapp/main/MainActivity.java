@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.*;
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
+import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -26,7 +27,6 @@ public class MainActivity extends Activity {
     private SensorInput sensorInput;
     private ArrayAdapter<String> arrayAdapter;
     private RecyclerView listViewMain;
-    private FloatingActionButton addNewSignalButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +38,8 @@ public class MainActivity extends Activity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorSpinner = findViewById(R.id.spinnerSensorSelect);
         listViewMain = findViewById(R.id.linearLayoutMain);
-        addNewSignalButton = findViewById(R.id.floatingActionButtonNewSignal);
+        FloatingActionButton addNewSignalButton = findViewById(R.id.floatingActionButtonNewSignal);
+        FloatingActionButton editSensorButton = findViewById(R.id.floatingActionButtonEditSensor);
 
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
         sensorInput = new SensorInput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, findViewById(R.id.textViewX), findViewById(R.id.textViewY), findViewById(R.id.textViewZ));
@@ -67,6 +68,10 @@ public class MainActivity extends Activity {
 
         addNewSignalButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, NewSignalActivity.class);
+            startActivity(intent);
+        });
+        editSensorButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SensorEditActivity.class);
             startActivity(intent);
         });
     }

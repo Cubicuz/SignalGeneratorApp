@@ -17,7 +17,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/signalEditSensorSpinner"
+                android:id="@+id/sensorEditSensorSpinner"
                 android:minHeight="40dip"/>
     </TableRow>
     <TableLayout
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned|numberDecimal"
                     android:ems="5"
-                    android:id="@+id/editTextNumberSigned2"/>
+                    android:id="@+id/editTextNumberSignedXMin"/>
             <Button
                     android:text="reset"
                     android:layout_width="wrap_content"
@@ -118,12 +118,92 @@
                     android:layout_height="wrap_content"
                     android:inputType="numberSigned|numberDecimal"
                     android:ems="5"
-                    android:id="@+id/editTextNumberSigned3"/>
+                    android:id="@+id/editTextNumberSignedXMax"/>
             <Button
                     android:text="reset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/buttonSensorEditResetXMax"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="Y min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonYMin"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:ems="5"
+                    android:id="@+id/editTextNumberSignedYMin"/>
+            <Button
+                    android:text="reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSensorEditResetYMin"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="Y max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonYMax"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:ems="5"
+                    android:id="@+id/editTextNumberSignedYMax"/>
+            <Button
+                    android:text="reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSensorEditResetYMax"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="Z min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonZMin"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:ems="5"
+                    android:id="@+id/editTextNumberSignedZMin"/>
+            <Button
+                    android:text="reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSensorEditResetZMin"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="Z max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonZMax"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:ems="5"
+                    android:id="@+id/editTextNumberSignedZMax"/>
+            <Button
+                    android:text="reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSensorEditResetZMax"/>
         </TableRow>
     </TableLayout>
 
