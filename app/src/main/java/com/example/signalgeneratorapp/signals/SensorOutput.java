@@ -105,9 +105,9 @@ public class SensorOutput{
             double rangeSensor = negative ? 2*maxSensor : maxSensor;
 
             double output = (value - minSensor) / rangeSensor * rangePort + minPort;
+            output = Double.max(output, minPort);
+            output = Double.min(output, maxPort);
             port.set(output);
-
-
             return output;
         }
 
@@ -136,8 +136,15 @@ public class SensorOutput{
     public class SensorOutputDimension extends UnitOutputPort {
         public final int dimension;
 
-        public double usermin= util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
-        public double usermax=sensor.getMaximumRange();
+        public double usermin = util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
+        public double usermax = sensor.getMaximumRange();
+
+        public void resetUserMin(){
+            usermin = util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
+        }
+        public void resetUserMax(){
+            usermax = sensor.getMaximumRange();
+        }
 
         @Override
         public void connect(UnitInputPort unitInputPort){

@@ -11,10 +11,10 @@ import java.util.List;
 
 public class SensorOutputManager {
     private final LinkedList<SensorOutput> sensorOutputs = new LinkedList<>();
-    private final HashMap<Sensor, SensorOutput> sensorToSensorOutput = new HashMap<>();
+    private final HashMap<Integer, SensorOutput> sensorToSensorOutput = new HashMap<>();
     private Context context;
     public LinkedList<SensorOutput> getSensorOutputList(){return sensorOutputs;}
-    public SensorOutput getSensorOutput(Sensor sensor){ return sensorToSensorOutput.get(sensor); }
+    public SensorOutput getSensorOutput(Sensor sensor){ return sensorToSensorOutput.get(sensor.getType()); }
     public void start(){
         sensorOutputs.forEach(sensorOutput -> {
             if (sensorOutput.isSensorInUse()) {
@@ -36,7 +36,7 @@ public class SensorOutputManager {
         deviceSensors.forEach(sensor -> {
             SensorOutput so = new SensorOutput(sensor, context);
             sensorOutputs.add(so);
-            sensorToSensorOutput.put(sensor, so);
+            sensorToSensorOutput.put(sensor.getType(), so);
         });
 
     }
