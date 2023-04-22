@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.ProgressBar;
+import com.example.signalgeneratorapp.R;
+import com.example.signalgeneratorapp.StorageManager;
 import com.example.signalgeneratorapp.util;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.ConnectableInput;
@@ -36,6 +38,7 @@ public class SensorOutput{
 
     public SensorOutput(@NotNull Sensor sensor, Context context) {
         name = sensor.getName();
+        this.context = context;
         this.sensor = sensor;
         dimensions = SensorDimensions.getOrDefault(sensor.getType(), 1);
 
@@ -43,7 +46,6 @@ public class SensorOutput{
             connectedPorts.add(new HashSet<>());
             outputDimensions.add(new SensorOutputDimension(i));
         }
-        this.context = context;
     }
 
     public void connect(UnitInputPort unitInputPort, int dimension){
@@ -135,15 +137,32 @@ public class SensorOutput{
 
     public class SensorOutputDimension extends UnitOutputPort {
         public final int dimension;
+        // those are for storage
+        private static final String userMinName = "usermin";
+        private static final String userMaxName = "usermax";
+        private double usermin = util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
+        private double usermax = sensor.getMaximumRange();
 
-        public double usermin = util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
-        public double usermax = sensor.getMaximumRange();
+        public double getUsermin(){return usermin;}
+        public double getUsermax(){return usermax;}
+        public void setUsermin(double um){
+            usermin = um;
+            StorageManager.getInstance().store(generatePreferencesStringForVariable(userMinName), Double.toString(um));
+        }
+        public void setUsermax(double um){
+            usermax = um;
+            StorageManager.getInstance().store(generatePreferencesStringForVariable(userMaxName), Double.toString(um));
+        }
 
         public void resetUserMin(){
-            usermin = util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0;
+            setUsermin(util.SensorsWithNegativeRange.contains(sensor.getType()) ? -sensor.getMaximumRange() : 0);
         }
         public void resetUserMax(){
-            usermax = sensor.getMaximumRange();
+            setUsermax(sensor.getMaximumRange());
+        }
+
+        private String generatePreferencesStringForVariable(String variableName){
+            return context.getString(R.string.storage_key_sensor_output_prefix) + "." + dimension + "." + variableName;
         }
 
         @Override
@@ -171,6 +190,12 @@ public class SensorOutput{
         protected SensorOutputDimension(int dimension){
             super(SensorOutput.this.name + " " + dimension);
             this.dimension = dimension;
+            if (StorageManager.getInstance().contains(generatePreferencesStringForVariable(userMinName))){
+                usermin = Double.parseDouble(StorageManager.getInstance().load(generatePreferencesStringForVariable(userMinName)));
+            }
+            if (StorageManager.getInstance().contains(generatePreferencesStringForVariable(userMaxName))){
+                usermax = Double.parseDouble(StorageManager.getInstance().load(generatePreferencesStringForVariable(userMaxName)));
+            }
         }
     }
 }

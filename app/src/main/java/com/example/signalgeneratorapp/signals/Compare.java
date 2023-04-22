@@ -18,7 +18,7 @@ public class Compare extends Signal{
     public String getType() {
         return type;
     }
-    public static final String type = "add";
+    public static final String type = "compare";
 
     @Override
     protected void finalize() throws Throwable {

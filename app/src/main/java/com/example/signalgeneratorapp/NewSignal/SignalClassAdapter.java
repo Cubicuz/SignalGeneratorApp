@@ -98,4 +98,8 @@ public class SignalClassAdapter extends RecyclerView.Adapter<SignalClassAdapter.
     public BiFunction<String, Synthesizer, Signal> getSelectedConstructor(){
         return SignalConstructors.get(selectedIndex);
     }
+
+    public String getSelectedTypeName(){
+        return SignalClassNames.get(selectedIndex);
+    }
 }

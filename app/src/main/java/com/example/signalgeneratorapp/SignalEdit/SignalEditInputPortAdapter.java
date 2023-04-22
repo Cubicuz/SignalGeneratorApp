@@ -60,6 +60,7 @@ public class SignalEditInputPortAdapter extends RecyclerView.Adapter<SignalEditI
         holder.EditConstantValue.setOnFocusChangeListener((v, hasFocus) -> {
             if (! hasFocus){
                 uip.set(Double.valueOf(holder.EditConstantValue.getText().toString()));
+
             }
         });
         holder.ConnectedOutput.setAdapter(adapterAllOutputPorts);

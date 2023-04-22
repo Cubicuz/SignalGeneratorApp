@@ -1,25 +1,22 @@
 package com.example.signalgeneratorapp;
 
-import com.example.signalgeneratorapp.signals.Signal;
-import com.example.signalgeneratorapp.signals.SineSignal;
+import com.example.signalgeneratorapp.signals.*;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
 import com.jsyn.unitgen.LineOut;
-import com.jsyn.unitgen.SineOscillator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 
 public final class SignalManager {
 
     private final Map<String, Signal> signals = new HashMap<>();
-    private long cnt = 0;
+    private long signalCount = 0;
     private final Map<UnitOutputPort, Signal> outputToSignal = new HashMap<>();
 
     public Collection<Signal> getSignalList() { return signals.values(); }
@@ -39,9 +36,21 @@ public final class SignalManager {
         E signal = fn.apply(name, synthesizer);
         signals.put(name, signal);
         signal.outputsPorts().forEach(unitOutputPort -> outputToSignal.put(unitOutputPort, signal));
-        cnt++;
-        signalsChanged.firePropertyChange("signal count", cnt-1, cnt);
+        signalCount++;
+        storeSignalToPreferences(signal);
+        signalsChanged.firePropertyChange("signal count", signalCount -1, signalCount);
         return signal;
+    }
+
+    public void removeSignal(String name){
+        Signal signal = signals.get(name);
+        if (signal == null){return;}
+        signal.delete();
+        signals.remove(name);
+        signal.outputsPorts().forEach(outputToSignal::remove);
+        removeSignalFromPreferences(signal);
+        signalCount--;
+        signalsChanged.firePropertyChange("signal count", signalCount +1, signalCount);
     }
 
     private final PropertyChangeSupport signalsChanged;
@@ -63,6 +72,7 @@ public final class SignalManager {
             sig.name = to;
             signals.put(to, sig);
             // call event or so
+            updateSignalNameInPreferences(sig, from, to);
             signalsChanged.firePropertyChange("signal name", from, to);
         }
     }
@@ -79,6 +89,69 @@ public final class SignalManager {
 
     public UnitInputPort lineout(){
         return lineOut.input;
+    }
+
+    public void loadFromPreferences(){
+        if (!StorageManager.getInstance().contains(App.getContext().getString(R.string.storage_key_signal_names_prefix))){
+            return;
+        }
+        Set<String> names = StorageManager.getInstance().loadSet(App.getContext().getString(R.string.storage_key_signal_names_prefix));
+        names.forEach(name -> {
+            if (!StorageManager.getInstance().contains(App.getContext().getString(R.string.storage_key_signal_names_prefix)+name)){
+                throw new RuntimeException("Signal name is in set but signal type is not saved!");
+            }
+            String type = StorageManager.getInstance().load(App.getContext().getString(R.string.storage_key_signal_names_prefix)+name);
+            Signal signal = createSignalFromPreferenceData(name, type);
+            signal.load();
+        });
+    }
+
+    private Signal createSignalFromPreferenceData(String name, String type){
+         switch (type) {
+             case AddSignal.type:
+                 return addSignal(name, AddSignal::new);
+             case Compare.type:
+                 return addSignal(name, Compare::new);
+             case DivideSignal.type:
+                 return addSignal(name, DivideSignal::new);
+             case LinearRampSignal.type:
+                 return addSignal(name, LinearRampSignal::new);
+             case MaximumSignal.type:
+                 return addSignal(name, MaximumSignal::new);
+             case MinimumSignal.type:
+                 return addSignal(name, MinimumSignal::new);
+             case SawtoothSignal.type:
+                 return addSignal(name, SawtoothSignal::new);
+             case SchmidtTriggerSignal.type:
+                 return addSignal(name, SchmidtTriggerSignal::new);
+             case SineSignal.type:
+                 return addSignal(name, SineSignal::new);
+             default:
+                 throw new RuntimeException("unavailable signal type: " + type + " for signal name: " + name);
+        }
+    }
+
+    private void storeToPreferences(){
+        StorageManager.getInstance().storeSet(App.getContext().getString(R.string.storage_key_signal_names_prefix), signals.keySet());
+        signals.forEach((s, signal) -> {
+            StorageManager.getInstance().store(App.getContext().getString(R.string.storage_key_signal_names_prefix)+s, signal.getType());
+        });
+    }
+
+    private void storeSignalToPreferences(Signal signal){
+        StorageManager.getInstance().storeSet(App.getContext().getString(R.string.storage_key_signal_names_prefix), signals.keySet());
+        StorageManager.getInstance().store(App.getContext().getString(R.string.storage_key_signal_names_prefix)+signal.name, signal.getType());
+    }
+
+    private void removeSignalFromPreferences(Signal signal){
+        StorageManager.getInstance().storeSet(App.getContext().getString(R.string.storage_key_signal_names_prefix), signals.keySet());
+        StorageManager.getInstance().remove(App.getContext().getString(R.string.storage_key_signal_names_prefix)+signal.name);
+    }
+
+    private void updateSignalNameInPreferences(Signal signal, String oldName, String newName){
+        StorageManager.getInstance().store(App.getContext().getString(R.string.storage_key_signal_names_prefix)+newName, signal.getType());
+        StorageManager.getInstance().remove(App.getContext().getString(R.string.storage_key_signal_names_prefix)+oldName);
+        StorageManager.getInstance().storeSet(App.getContext().getString(R.string.storage_key_signal_names_prefix), signals.keySet());
     }
 
     private SignalManager(){

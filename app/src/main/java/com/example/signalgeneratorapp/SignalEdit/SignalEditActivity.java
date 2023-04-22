@@ -239,6 +239,7 @@ public class SignalEditActivity extends Activity {
         if (sensorEventListener != null){
             sensorManager.unregisterListener(sensorEventListener);
         }
+        editingSignal.store();
     }
 
 

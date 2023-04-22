@@ -20,7 +20,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class MainActivity extends Activity {
-    private SineSynth mSineSynth;
     private SensorManager sensorManager;
     private Sensor rotationSensor;
     private Spinner sensorSpinner;
@@ -32,9 +31,12 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+        StorageManager.createInstance(getApplicationContext());
         SensorOutputManager.createInstance(getApplicationContext());
 
-        mSineSynth = new SineSynth();
+        SignalManager.getInstance().loadFromPreferences();
+
+        //SineSynth mSineSynth = new SineSynth();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorSpinner = findViewById(R.id.spinnerSensorSelect);
         listViewMain = findViewById(R.id.linearLayoutMain);

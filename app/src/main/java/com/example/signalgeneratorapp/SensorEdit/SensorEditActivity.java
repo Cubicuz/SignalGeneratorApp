@@ -153,44 +153,44 @@ public class SensorEditActivity extends Activity {
         min.setOnClickListener(v -> {
             SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
             double usermin = lastSensorValues[dimension];
-            so.getSensorOutputDimension(dimension).usermin = usermin;
+            so.getSensorOutputDimension(dimension).setUsermin(usermin);
             textmin.setText(String.format(Locale.ENGLISH, "%.02f", usermin));
         });
         resetMin.setOnClickListener(v -> {
             SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
             so.getSensorOutputDimension(dimension).resetUserMin();
-            textmin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).usermin));
+            textmin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).getUsermin()));
         });
         textmin.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus){
                 SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
                 try {
-                    Double val = Double.parseDouble(textmin.getText().toString());
-                    so.getSensorOutputDimension(dimension).usermin = val;
+                    double val = Double.parseDouble(textmin.getText().toString());
+                    so.getSensorOutputDimension(dimension).setUsermin(val);
                 } catch (NumberFormatException e){
-                    textmin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).usermin));
+                    textmin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).getUsermin()));
                 }
             }
         });
         max.setOnClickListener(v -> {
             SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
             double usermax = lastSensorValues[dimension];
-            so.getSensorOutputDimension(dimension).usermax = usermax;
+            so.getSensorOutputDimension(dimension).setUsermax(usermax);;
             textmax.setText(String.format(Locale.ENGLISH, "%.02f", usermax));
         });
         resetMax.setOnClickListener(v -> {
             SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
             so.getSensorOutputDimension(dimension).resetUserMax();
-            textmax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).usermax));
+            textmax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).getUsermax()));
         });
         textmax.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus){
                 SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
                 try {
-                    Double val = Double.parseDouble(textmax.getText().toString());
-                    so.getSensorOutputDimension(dimension).usermax = val;
+                    double val = Double.parseDouble(textmax.getText().toString());
+                    so.getSensorOutputDimension(dimension).setUsermax(val);
                 } catch (NumberFormatException e){
-                    textmax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).usermax));
+                    textmax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(dimension).getUsermax()));
                 }
             }
         });
@@ -202,12 +202,12 @@ public class SensorEditActivity extends Activity {
         int dimensions = util.SensorDimensions.get(selectedSensor.getType());
         SensorOutput so = SensorOutputManager.getInstance().getSensorOutput(selectedSensor);
 
-        editTextXMin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(0).usermin));
-        editTextXMax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(0).usermax));
+        editTextXMin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(0).getUsermin()));
+        editTextXMax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(0).getUsermax()));
 
         if (dimensions > 1){
-            editTextYMin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(1).usermin));
-            editTextYMax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(1).usermax));
+            editTextYMin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(1).getUsermin()));
+            editTextYMax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(1).getUsermax()));
         } else {
             editTextYMin.setText("--.-");
             editTextYMax.setText("--.-");
@@ -218,8 +218,8 @@ public class SensorEditActivity extends Activity {
         buttonYMaxReset.setEnabled(dimensions > 1);
 
         if (dimensions > 2){
-            editTextZMin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(2).usermin));
-            editTextZMax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(2).usermax));
+            editTextZMin.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(2).getUsermin()));
+            editTextZMax.setText(String.format(Locale.ENGLISH, "%.02f", so.getSensorOutputDimension(2).getUsermax()));
         } else {
             editTextZMin.setText("--.-");
             editTextZMax.setText("--.-");

@@ -16,7 +16,7 @@ import com.example.signalgeneratorapp.SignalManager;
 public class NewSignalActivity extends Activity {
     private EditText editTextSignalName;
     private RecyclerView recyclerViewSignalOptions;
-    private Button buttonApproveNewSignal;
+    private Button buttonApproveNewSignal, buttonSuggestSignalName;
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class NewSignalActivity extends Activity {
         editTextSignalName = findViewById(R.id.editTextNewSignalName);
         recyclerViewSignalOptions = findViewById(R.id.recyclerViewSignalOptions);
         buttonApproveNewSignal = findViewById(R.id.buttonApproveNewSignal);
+        buttonSuggestSignalName = findViewById(R.id.buttonSuggestSignalName);
 
         recyclerViewSignalOptions.setLayoutManager(new LinearLayoutManager(this));
         SignalClassAdapter signalClassAdapter = new SignalClassAdapter();
@@ -48,6 +49,16 @@ public class NewSignalActivity extends Activity {
             }
         });
 
+        buttonSuggestSignalName.setOnClickListener(v -> {
+            String baseName = signalClassAdapter.getSelectedTypeName();
+            String signalName = baseName;
+            int i=0;
+            while (SignalManager.getInstance().signalNameExists(signalName)){
+                i++;
+                signalName = baseName+i;
+            }
+            editTextSignalName.setText(signalName);
+        });
         buttonApproveNewSignal.setOnClickListener(v -> {
             SignalManager.getInstance().addSignal(editTextSignalName.getText().toString(), signalClassAdapter.getSelectedConstructor());
             finish();
