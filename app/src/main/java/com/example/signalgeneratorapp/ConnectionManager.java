@@ -71,6 +71,8 @@ public class ConnectionManager {
     public void disconnect(Signal signal){
         signal.inputsPorts().forEach(unitInputPort -> disconnect(unitInputPort));
         signal.outputsPorts().forEach(unitOutputPort -> disconnect(unitOutputPort));
+        disconnectLineout(signal.firstOutputPort(), 0);
+        disconnectLineout(signal.firstOutputPort(), 1);
     }
 
     public UnitOutputPort getConnected(UnitInputPort uip){
@@ -80,12 +82,18 @@ public class ConnectionManager {
     // lineout interface
     private LinkedList<HashSet<UnitOutputPort>> lineoutConnections = new LinkedList<>();
     public void connectLineout(UnitOutputPort uop, int leftRight){
+        connectLineout(uop, leftRight, true);
+    }
+    private void connectLineout(UnitOutputPort uop, int leftRight, boolean store){
         if (lineoutConnections.get(leftRight).contains(uop)){
             // connection already there
             return;
         }
         uop.connect(0, SignalManager.getInstance().lineout(), leftRight);
         lineoutConnections.get(leftRight).add(uop);
+        if (store){
+            storeLineoutConnections();
+        }
     }
 
     public boolean isLineoutConnected(UnitOutputPort uop, int leftRight){
@@ -96,7 +104,50 @@ public class ConnectionManager {
         if (lineoutConnections.get(leftRight).contains(uop)){
             uop.disconnect(0, SignalManager.getInstance().lineout(), leftRight);
             lineoutConnections.get(leftRight).remove(uop);
+            storeLineoutConnections();
         }
+    }
+
+    private void loadLineoutConnection(){
+        String keyLeft = App.getContext().getString(R.string.storage_key_lineout_connection_prefix) + ".left";
+        String keyRight = App.getContext().getString(R.string.storage_key_lineout_connection_prefix) + ".right";
+        if (StorageManager.getInstance().contains(keyLeft)){
+            String leftValue = StorageManager.getInstance().load(keyLeft);
+            String[] leftValues = leftValue.split("\\.");
+            for (int i=0;i<leftValues.length;i+=2){
+                Signal signal = SignalManager.getInstance().getSignal(leftValues[i]);
+                UnitOutputPort uop = signal.firstOutputPort();
+                connectLineout(uop, 0, false);
+            }
+        }
+        if (StorageManager.getInstance().contains(keyRight)){
+            String rightValue = StorageManager.getInstance().load(keyRight);
+            String[] rightValues = rightValue.split("\\.");
+            for (int i=0;i<rightValues.length;i+=2){
+                Signal signal = SignalManager.getInstance().getSignal(rightValues[i]);
+                UnitOutputPort uop = signal.firstOutputPort();
+                connectLineout(uop, 1, false);
+            }
+
+        }
+
+    }
+
+    private void storeLineoutConnections(){
+        String keyLeft = App.getContext().getString(R.string.storage_key_lineout_connection_prefix) + ".left";
+        String keyRight = App.getContext().getString(R.string.storage_key_lineout_connection_prefix) + ".right";
+        StringBuilder valueLeft = new StringBuilder();
+        StringBuilder valueRight = new StringBuilder();
+        for (UnitOutputPort unitOutputPort : lineoutConnections.get(0)) {
+            Signal signal = SignalManager.getInstance().getSignal(unitOutputPort);
+            valueLeft.append(signal.name).append(".").append(unitOutputPort.getName()).append(".");
+        }
+        for (UnitOutputPort unitOutputPort : lineoutConnections.get(1)) {
+            Signal signal = SignalManager.getInstance().getSignal(unitOutputPort);
+            valueRight.append(signal.name).append(".").append(unitOutputPort.getName()).append(".");
+        }
+        StorageManager.getInstance().store(keyLeft, valueLeft.toString());
+        StorageManager.getInstance().store(keyRight, valueRight.toString());
     }
 
     private void loadFromPreferences(String key) {
@@ -157,6 +208,7 @@ public class ConnectionManager {
 
     public void loadConnections(){
         generatePossibleStorageKeys().forEach(this::loadFromPreferences);
+        loadLineoutConnection();
     }
 
     private void storeConnection(UnitInputPort uip, UnitOutputPort uop){
