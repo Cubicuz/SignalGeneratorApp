@@ -198,6 +198,9 @@ public class SignalEditActivity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
                 String signalName = s.toString();
+                if (signalName.contains(".")){
+                    editTextSignalName.setError("Dot is not allowed!");
+                }
                 if (SignalManager.getInstance().signalNameExists(signalName)) {
                     editTextSignalName.setError("Name already exists!");
                 }

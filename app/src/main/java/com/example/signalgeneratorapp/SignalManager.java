@@ -18,11 +18,13 @@ public final class SignalManager {
     private final Map<String, Signal> signals = new HashMap<>();
     private long signalCount = 0;
     private final Map<UnitOutputPort, Signal> outputToSignal = new HashMap<>();
+    private final Map<UnitInputPort, Signal> inputToSignal = new HashMap<>();
 
     public Collection<Signal> getSignalList() { return signals.values(); }
     public Signal getSignal(String name) { return signals.get(name); }
     public boolean signalNameExists(String name) { return signals.containsKey(name); }
     public Signal getSignal(UnitOutputPort uop) { return outputToSignal.get(uop); }
+    public Signal getSignal(UnitInputPort uip) { return inputToSignal.get(uip); }
 
     private final Synthesizer synthesizer;
     // The lineout is not part of the signals because it has only one UnitInputPort with 2 dimensions.
@@ -36,6 +38,7 @@ public final class SignalManager {
         E signal = fn.apply(name, synthesizer);
         signals.put(name, signal);
         signal.outputsPorts().forEach(unitOutputPort -> outputToSignal.put(unitOutputPort, signal));
+        signal.inputsPorts().forEach(unitInputPort -> inputToSignal.put(unitInputPort, signal));
         signalCount++;
         storeSignalToPreferences(signal);
         signalsChanged.firePropertyChange("signal count", signalCount -1, signalCount);
@@ -45,9 +48,11 @@ public final class SignalManager {
     public void removeSignal(String name){
         Signal signal = signals.get(name);
         if (signal == null){return;}
+        ConnectionManager.getInstance().disconnect(signal);
         signal.delete();
         signals.remove(name);
         signal.outputsPorts().forEach(outputToSignal::remove);
+        signal.inputsPorts().forEach(inputToSignal::remove);
         removeSignalFromPreferences(signal);
         signalCount--;
         signalsChanged.firePropertyChange("signal count", signalCount +1, signalCount);
@@ -68,12 +73,14 @@ public final class SignalManager {
         } else if (!signals.containsKey(from)) {
             // from does not exist
         } else {
+            ConnectionManager.getInstance().renameSignal(from, to);
             Signal sig = signals.remove(from);
             sig.name = to;
             signals.put(to, sig);
             // call event or so
             updateSignalNameInPreferences(sig, from, to);
             signalsChanged.firePropertyChange("signal name", from, to);
+            // TODO: fix stored connections
         }
     }
 

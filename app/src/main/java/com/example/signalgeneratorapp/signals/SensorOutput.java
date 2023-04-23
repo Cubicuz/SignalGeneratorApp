@@ -29,6 +29,7 @@ public class SensorOutput{
     private final Sensor sensor;
     private final int dimensions;
     public String name;
+
     private int connectedCounter = 0;
     private final Context context;
 
@@ -47,7 +48,7 @@ public class SensorOutput{
             outputDimensions.add(new SensorOutputDimension(i));
         }
     }
-
+    public int getSensorType(){ return sensor.getType(); }
     public void connect(UnitInputPort unitInputPort, int dimension){
         if (dimension >= dimensions){
             throw new RuntimeException("illegal dimension " + dimension + " on sensor " + sensor.getName());

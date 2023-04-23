@@ -3,6 +3,8 @@ package com.example.signalgeneratorapp.main;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,17 +25,20 @@ public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapte
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
+        private final Button buttonDelete;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
 
-            textView = (TextView) view.findViewById(R.id.textViewSignalName);
+            textView = view.findViewById(R.id.textViewSignalName);
+            buttonDelete = view.findViewById(R.id.buttonDelete);
         }
 
         public TextView getTextView() {
             return textView;
         }
+        public Button getButtonDelete() { return buttonDelete; }
     }
     public interface OnClickListener {
         void onClick(int position, Signal signal);
@@ -41,8 +46,12 @@ public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapte
 
     private LinkedList<Signal> signalCollection;
     private OnClickListener onClickListener;
+    private OnClickListener onDeleteClickListener;
     public void setOnClickListener(OnClickListener onClickListener){
         this.onClickListener = onClickListener;
+    }
+    public void setOnDeleteClickListener(OnClickListener onClickListener){
+        this.onDeleteClickListener = onClickListener;
     }
     public SensorSignalAdapter()
     {
@@ -71,6 +80,11 @@ public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapte
         holder.itemView.setOnClickListener(v -> {
             if (onClickListener != null){
                 onClickListener.onClick(position, s);
+            }
+        });
+        holder.getButtonDelete().setOnClickListener(v -> {
+            if (onDeleteClickListener != null){
+                onDeleteClickListener.onClick(position, s);
             }
         });
     }

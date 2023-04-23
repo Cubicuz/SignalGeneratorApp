@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
         SensorOutputManager.createInstance(getApplicationContext());
 
         SignalManager.getInstance().loadFromPreferences();
+        ConnectionManager.getInstance().loadConnections();
 
         //SineSynth mSineSynth = new SineSynth();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -63,6 +64,9 @@ public class MainActivity extends Activity {
             // Passing the data to the SignalEditActivity
             intent.putExtra(util.INTENT_SIGNAL_NAME, signal.name);
             startActivity(intent);
+        });
+        ssa.setOnDeleteClickListener((position, signal) -> {
+            SignalManager.getInstance().removeSignal(signal.name);
         });
 
         listViewMain.setLayoutManager(new LinearLayoutManager(this));
