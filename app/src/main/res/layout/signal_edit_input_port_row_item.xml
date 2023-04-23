@@ -30,6 +30,6 @@
                 android:ems="6"
                 android:id="@+id/editTextConstantValue"
                 android:layout_weight="1"
-                android:singleLine="true"/>
+                android:singleLine="true" android:imeOptions="actionDone"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

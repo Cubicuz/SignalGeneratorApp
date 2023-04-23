@@ -4,149 +4,154 @@
                                                    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
-    <LinearLayout
-            android:orientation="vertical"
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-        <TextView
-                android:text="Edit Signal 1"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textViewSignalType"
-                android:textAlignment="center" android:textSize="20sp"/>
-
-        <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+        >
             <TextView
-                    android:text="Sensor Preview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:text="Edit Signal 1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewSignalType"
+                    android:textAlignment="center" android:textSize="20sp"/>
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:text="Sensor Preview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="20sp"/>
+                <Spinner
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/signalEditSensorSpinner"
+                        android:minHeight="40dip"/>
+            </TableRow>
+            <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="1"
+                    android:dividerPadding="5dp">
+
+                <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                    <RadioButton
+                            android:text="Sensor Wert X"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/radioButtonSensorX"
+                            android:checked="true"/>
+                    <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:id="@+id/progressBarSensorValueX"
+                            android:paddingHorizontal="10dp" android:max="100"/>
+                    <TextView
+                            android:text="0.00"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textViewSensorValueX"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    <RadioButton
+                            android:text="Sensor Wert Y"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/radioButtonSensorY"/>
+                    <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/progressBarSensorValueY"
+                            android:paddingHorizontal="10dp" android:max="100"/>
+                    <TextView
+                            android:text="0.00"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textViewSensorValueY"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    <RadioButton
+                            android:text="Sensor Wert Z"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/radioButtonSensorZ"/>
+                    <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/progressBarSensorValueZ"
+                            android:paddingHorizontal="10dp" android:max="100"/>
+                    <TextView
+                            android:text="0.00"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textViewSensorValueZ"/>
+                </TableRow>
+            </TableLayout>
+            <TextView
+                    android:text="Signal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="20sp"/>
-            <Spinner
-                    android:layout_weight="1"
+            <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/signalEditSensorSpinner"
-                    android:minHeight="40dip"/>
-        </TableRow>
-        <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stretchColumns="1"
-                android:dividerPadding="5dp">
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/editTextSignalName">
+                <requestFocus/>
+            </EditText>
+            <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" app:singleLine="true">
 
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <RadioButton
-                        android:text="Sensor Wert X"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/radioButtonSensorX"
-                        android:checked="true"/>
-                <ProgressBar
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:id="@+id/progressBarSensorValueX"
-                        android:paddingHorizontal="10dp" android:max="100"/>
-                <TextView
-                        android:text="0.00"
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLeftAudioChannel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textViewSensorValueX"/>
-            </TableRow>
-            <TableRow
+                        android:checkable="true"
+                        app:chipIconVisible="true"
+                        app:chipIcon="@android:drawable/ic_lock_silent_mode_off"
+                        app:chipIconTint="#FFFFFF"
+                        android:text="left channel"
+                        app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
+                        app:checkedIconTint="#000000"/>
+                <com.google.android.material.chip.Chip
+                        android:id="@+id/chipRightAudioChannel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        app:chipIconVisible="true"
+                        app:chipIcon="@android:drawable/ic_lock_silent_mode_off"
+                        app:chipIconTint="#FFFFFF"
+                        android:text="right channel"
+                        app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
+                        app:checkedIconTint="#000000"/>
+            </com.google.android.material.chip.ChipGroup>
+            <TextView
+                    android:text="Inputs"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <RadioButton
-                        android:text="Sensor Wert Y"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/radioButtonSensorY"/>
-                <ProgressBar
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/progressBarSensorValueY"
-                        android:paddingHorizontal="10dp" android:max="100"/>
-                <TextView
-                        android:text="0.00"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textViewSensorValueY"/>
-            </TableRow>
-            <TableRow
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:id="@+id/textView"/>
+            <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <RadioButton
-                        android:text="Sensor Wert Z"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/radioButtonSensorZ"/>
-                <ProgressBar
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/progressBarSensorValueZ"
-                        android:paddingHorizontal="10dp" android:max="100"/>
-                <TextView
-                        android:text="0.00"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textViewSensorValueZ"/>
-            </TableRow>
-        </TableLayout>
-        <TextView
-                android:text="Signal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"/>
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/editTextSignalName">
-            <requestFocus/>
-        </EditText>
-        <com.google.android.material.chip.ChipGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" app:singleLine="true">
-
-            <com.google.android.material.chip.Chip
-                    android:id="@+id/chipLeftAudioChannel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    app:chipIconVisible="true"
-                    app:chipIcon="@android:drawable/ic_lock_silent_mode_off"
-                    app:chipIconTint="#FFFFFF"
-                    android:text="left channel"
-                    app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
-                    app:checkedIconTint="#000000"/>
-            <com.google.android.material.chip.Chip
-                    android:id="@+id/chipRightAudioChannel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    app:chipIconVisible="true"
-                    app:chipIcon="@android:drawable/ic_lock_silent_mode_off"
-                    app:chipIconTint="#FFFFFF"
-                    android:text="right channel"
-                    app:checkedIcon="@android:drawable/ic_lock_silent_mode_off"
-                    app:checkedIconTint="#000000"/>
-        </com.google.android.material.chip.ChipGroup>
-        <TextView
-                android:text="Inputs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:id="@+id/textView"/>
-        <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/recyclerViewInputPorts"/>
-    </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:id="@+id/recyclerViewInputPorts"/>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
