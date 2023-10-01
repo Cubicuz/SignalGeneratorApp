@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.*;
+import com.example.signalgeneratorapp.Games.MarbleGameActivity;
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
@@ -80,6 +81,11 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(MainActivity.this, SensorEditActivity.class);
             startActivity(intent);
         });
+
+        {
+            Intent intent = new Intent(MainActivity.this, MarbleGameActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
