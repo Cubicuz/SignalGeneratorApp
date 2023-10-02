@@ -1,6 +1,9 @@
 package com.example.signalgeneratorapp.Games;
 
+import com.example.signalgeneratorapp.SignalManager;
+import com.example.signalgeneratorapp.signals.LinearRampSignal;
 import com.jsyn.ports.UnitInputPort;
+import com.jsyn.ports.UnitOutputPort;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -20,9 +23,20 @@ public class MarbleGame {
     private GameThread gameThread;
     private UnitInputPortForSensorGrab unitInputPortForSensorGrabX, unitInputPortForSensorGrabY;
 
+    private LinearRampSignal xlow, xhigh, ylow, yhigh;
+
     public MarbleGame(){
         unitInputPortForSensorGrabX = new UnitInputPortForSensorGrab("unitInputPortForSensorGrabX", true);
         unitInputPortForSensorGrabY = new UnitInputPortForSensorGrab("unitInputPortForSensorGrabY", false);
+        xlow = SignalManager.getInstance().addOrGetSignal("marbleXLow", LinearRampSignal::new);
+        xhigh = SignalManager.getInstance().addOrGetSignal("marbleXHigh", LinearRampSignal::new);
+        ylow = SignalManager.getInstance().addOrGetSignal("marbleYLow", LinearRampSignal::new);
+        yhigh = SignalManager.getInstance().addOrGetSignal("marbleYHigh", LinearRampSignal::new);
+
+        xlow.time().set(0.01);
+        xhigh.time().set(0.01);
+        ylow.time().set(0.01);
+        yhigh.time().set(0.01);
     }
 
     public void start(){
@@ -46,6 +60,10 @@ public class MarbleGame {
 
     public UnitInputPort getXTiltPort(){ return unitInputPortForSensorGrabX; }
     public UnitInputPort getYTiltPort(){ return unitInputPortForSensorGrabY; }
+    public UnitOutputPort getXLow() { return xlow.firstOutputPort(); }
+    public UnitOutputPort getXHigh() { return xhigh.firstOutputPort(); }
+    public UnitOutputPort getYLow() { return ylow.firstOutputPort(); }
+    public UnitOutputPort getYHigh() { return yhigh.firstOutputPort(); }
 
     public float getX(){ return normedPositionX; }
     public float getY() {return normedPositionY; }
@@ -87,9 +105,24 @@ public class MarbleGame {
             positionY = overshoot - fieldMax;       //bounce from the wall
             velocityY = velocityY * bouncingVelocityLossfactor;
         }
-
         normedPositionX = positionX / fieldMax;
         normedPositionY = positionY / fieldMax;
+
+        if (normedPositionX > 0){
+            xlow.input().set(0.0);
+            xhigh.input().set(normedPositionX);
+        } else {
+            xlow.input().set(-normedPositionX);
+            xhigh.input().set(0.0);
+        }
+        if (normedPositionY > 0){
+            ylow.input().set(0.0);
+            yhigh.input().set(normedPositionY);
+        } else {
+            ylow.input().set(-normedPositionY);
+            yhigh.input().set(0.0);
+        }
+
         if (view != null){
             view.update(normedPositionX, normedPositionY);
         }
@@ -117,7 +150,8 @@ public class MarbleGame {
                 }
                 if (updateAvailable.get()) {
                     update(tiltUpdate.tiltX, tiltUpdate.tiltY);
-
+                    tiltUpdate.xUpdated = false;
+                    tiltUpdate.yUpdated = false;
                     updateAvailable.set(false);
                 }
             }

@@ -45,6 +45,14 @@ public final class SignalManager {
         return signal;
     }
 
+    public <E extends Signal> E addOrGetSignal(String name, BiFunction<String, Synthesizer, E> fn) {
+        if (signalNameExists(name)){
+            return (E) getSignal(name);
+        } else {
+            return addSignal(name, fn);
+        }
+    }
+
     public void removeSignal(String name){
         Signal signal = signals.get(name);
         if (signal == null){return;}

@@ -113,22 +113,25 @@ public class ConnectionManager {
         String keyRight = App.getContext().getString(R.string.storage_key_lineout_connection_prefix) + ".right";
         if (StorageManager.getInstance().contains(keyLeft)){
             String leftValue = StorageManager.getInstance().load(keyLeft);
-            String[] leftValues = leftValue.split("\\.");
-            for (int i=0;i<leftValues.length;i+=2){
-                Signal signal = SignalManager.getInstance().getSignal(leftValues[i]);
-                UnitOutputPort uop = signal.firstOutputPort();
-                connectLineout(uop, 0, false);
+            if (leftValue != ""){
+                String[] leftValues = leftValue.split("\\.");
+                for (int i=0;i<leftValues.length;i+=2){
+                    Signal signal = SignalManager.getInstance().getSignal(leftValues[i]);
+                    UnitOutputPort uop = signal.firstOutputPort();
+                    connectLineout(uop, 0, false);
+                }
             }
         }
         if (StorageManager.getInstance().contains(keyRight)){
             String rightValue = StorageManager.getInstance().load(keyRight);
-            String[] rightValues = rightValue.split("\\.");
-            for (int i=0;i<rightValues.length;i+=2){
-                Signal signal = SignalManager.getInstance().getSignal(rightValues[i]);
-                UnitOutputPort uop = signal.firstOutputPort();
-                connectLineout(uop, 1, false);
+            if (rightValue != ""){
+                String[] rightValues = rightValue.split("\\.");
+                for (int i=0;i<rightValues.length;i+=2){
+                    Signal signal = SignalManager.getInstance().getSignal(rightValues[i]);
+                    UnitOutputPort uop = signal.firstOutputPort();
+                    connectLineout(uop, 1, false);
+                }
             }
-
         }
 
     }
