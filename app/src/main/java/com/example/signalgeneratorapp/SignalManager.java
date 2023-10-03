@@ -1,6 +1,7 @@
 package com.example.signalgeneratorapp;
 
 import com.example.signalgeneratorapp.signals.*;
+import com.example.signalgeneratorapp.signals.presets.*;
 import com.jsyn.JSyn;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
@@ -141,6 +142,8 @@ public final class SignalManager {
                  return addSignal(name, SchmidtTriggerSignal::new);
              case SineSignal.type:
                  return addSignal(name, SineSignal::new);
+             case KickSignal.type:
+                 return addSignal(name, KickSignal::new);
              default:
                  throw new RuntimeException("unavailable signal type: " + type + " for signal name: " + name);
         }
