@@ -1,11 +1,12 @@
 package com.example.signalgeneratorapp.signals.presets;
 
 import com.example.signalgeneratorapp.signals.Signal;
+import com.example.signalgeneratorapp.signals.SignalWithAmplitude;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.*;
 
-public class KickSignal extends Signal {
+public class KickSignal extends SignalWithAmplitude {
 
     private final PulseOscillator pulseosc;
     private final SineOscillator sineosc;

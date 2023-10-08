@@ -7,7 +7,7 @@ import com.jsyn.unitgen.SineOscillator;
 
 import java.util.LinkedList;
 
-public class SineSignal extends Signal {
+public class SineSignal extends SignalWithAmplitude{
     private final SineOscillator oscillator;
 
     public SineSignal (String name, Synthesizer synthesizer){

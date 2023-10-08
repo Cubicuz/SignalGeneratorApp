@@ -4,7 +4,7 @@ import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.SawtoothOscillator;
 
-public class SawtoothSignal extends Signal{
+public class SawtoothSignal extends SignalWithAmplitude{
     private final SawtoothOscillator sawtoothOscillator;
     public SawtoothSignal(String name, Synthesizer synthesizer) {
         super(name, synthesizer);
