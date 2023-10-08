@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.R;
 import com.example.signalgeneratorapp.signals.*;
 import com.example.signalgeneratorapp.signals.presets.KickSignal;
+import com.example.signalgeneratorapp.signals.presets.WaveModFreq;
+import com.example.signalgeneratorapp.signals.presets.WaveSignal;
 import com.jsyn.Synthesizer;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,6 +68,12 @@ public class SignalClassAdapter extends RecyclerView.Adapter<SignalClassAdapter.
 
         SignalClassNames.add(KickSignal.type);
         SignalConstructors.add(KickSignal::new);
+
+        SignalClassNames.add(WaveSignal.type);
+        SignalConstructors.add(WaveSignal::new);
+
+        SignalClassNames.add(WaveModFreq.type);
+        SignalConstructors.add(WaveModFreq::new);
     }
 
     @NonNull

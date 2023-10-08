@@ -144,6 +144,10 @@ public final class SignalManager {
                  return addSignal(name, SineSignal::new);
              case KickSignal.type:
                  return addSignal(name, KickSignal::new);
+             case WaveSignal.type:
+                 return addSignal(name, WaveSignal::new);
+             case WaveModFreq.type:
+                 return addSignal(name, WaveModFreq::new);
              default:
                  throw new RuntimeException("unavailable signal type: " + type + " for signal name: " + name);
         }
