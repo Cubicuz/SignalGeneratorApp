@@ -7,14 +7,56 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             custom:exampleString="beispiel" custom:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/marbleGameView" custom:layout_constraintBottom_toTopOf="@+id/marbeGameResetButton"
-            custom:layout_constraintEnd_toEndOf="parent" custom:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/marbleGameView"
+            custom:layout_constraintBottom_toTopOf="@+id/marbleTopSpinner"
+            custom:layout_constraintEnd_toEndOf="parent"
+            custom:layout_constraintStart_toStartOf="parent"
+    />
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:inputType="textPersonName"
+            android:text="Signals:"
+            android:id="@+id/marbleEditTextSignalsDescription"
+            custom:layout_constraintTop_toTopOf="@id/marbleTopSpinner"
+            custom:layout_constraintBottom_toBottomOf="@id/marbleTopSpinner"
+            custom:layout_constraintLeft_toLeftOf="parent"
     />
     <Button
             android:text="Reset"
             android:id="@+id/marbeGameResetButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             custom:layout_constraintBottom_toBottomOf="parent"
-            custom:layout_constraintStart_toStartOf="parent"/>
+            custom:layout_constraintStart_toStartOf="parent"
+            custom:layout_constraintTop_toBottomOf="@id/marbleLeftSpinner"/>
+    <Spinner
+            android:layout_width="0dp"
+            android:layout_height="50dp" android:id="@+id/marbleTopSpinner"
+            custom:layout_constraintBottom_toTopOf="@+id/marbleLeftSpinner"
+            custom:layout_constraintLeft_toRightOf="@id/marbleEditTextSignalsDescription"
+            custom:layout_constraintRight_toRightOf="parent"
+    />
+    <Spinner
+            android:layout_width="0dp"
+            android:layout_height="50dp" android:id="@+id/marbleLeftSpinner"
+            custom:layout_constraintBottom_toTopOf="@+id/marbleBottomSpinner"
+            custom:layout_constraintLeft_toLeftOf="parent"
+            custom:layout_constraintWidth_percent="0.5"
+    />
+    <Spinner
+            android:layout_width="0dp"
+            android:layout_height="50dp" android:id="@+id/marbleRightSpinner"
+            custom:layout_constraintBottom_toTopOf="@+id/marbleBottomSpinner"
+            custom:layout_constraintStart_toEndOf="@+id/marbleLeftSpinner"
+            custom:layout_constraintRight_toRightOf="parent"
+            custom:layout_constraintWidth_percent="0.5"
+    />
+    <Spinner
+            android:layout_width="0dp"
+            android:layout_height="50dp" android:id="@+id/marbleBottomSpinner"
+            custom:layout_constraintLeft_toRightOf="@id/marbeGameResetButton"
+            custom:layout_constraintRight_toRightOf="parent"
+            custom:layout_constraintBottom_toBottomOf="parent"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

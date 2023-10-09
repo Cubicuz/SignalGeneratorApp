@@ -30,7 +30,7 @@ public class MarbleGameView extends View {
     private float mTextHeight;
 
     private Rect mField;
-    private int mBallX=40, mBallY=60, mBallRadius=20, mFieldWidth, mFieldHeight, mPadding = 5;;
+    private int mBallX=40, mBallY=60, mBallRadius=20, mFieldWidth, mFieldHeight, mPadding = 5;
 
     private float mBallXf, mBallYf;
 

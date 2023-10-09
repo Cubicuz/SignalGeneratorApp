@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
             startActivity(intent);
         });
 
-        if (false) {
+        if (true) {
             Intent intent = new Intent(MainActivity.this, MarbleGameActivity.class);
             startActivity(intent);
         }
