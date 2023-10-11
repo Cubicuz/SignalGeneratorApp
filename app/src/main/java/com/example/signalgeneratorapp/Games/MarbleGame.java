@@ -15,10 +15,11 @@ public class MarbleGame {
 
     private float positionX, positionY, velocityX, velocityY;
     private float normedPositionX, normedPositionY;
-    private float friction = 0.005f;
+    private float friction = 0.008f;
     private double maximumTilt = 10;
-    private float bouncingVelocityLossfactor = -1.0f; // this has to be negative
+    private float bouncingVelocityLossfactor = -0.9f; // this has to be negative
     private long fieldMax = 1000;
+    private float speedFactor = 20f;
     private long lastMillisTimeStamp;
     private GameThread gameThread;
     private UnitInputPortForSensorGrab unitInputPortForSensorGrabX, unitInputPortForSensorGrabY;
@@ -82,7 +83,7 @@ public class MarbleGame {
         float timeDelta = (float)(newTimestamp - lastMillisTimeStamp) / 1000;
         lastMillisTimeStamp = newTimestamp;
 
-        velocityX = velocityX + tiltx * timeDelta - velocityX * friction * timeDelta;
+        velocityX = velocityX + speedFactor * tiltx * timeDelta - velocityX * friction * timeDelta;
         positionX = positionX + velocityX * timeDelta;
         if (positionX > fieldMax){
             float overshoot = positionX - fieldMax;
@@ -94,7 +95,7 @@ public class MarbleGame {
             velocityX = velocityX * bouncingVelocityLossfactor;
         }
 
-        velocityY = velocityY + tilty * timeDelta - velocityY * friction * timeDelta;
+        velocityY = velocityY + speedFactor * tilty * timeDelta - velocityY * friction * timeDelta;
         positionY = positionY + velocityY * timeDelta;
         if (positionY > fieldMax){
             float overshoot = positionY - fieldMax;

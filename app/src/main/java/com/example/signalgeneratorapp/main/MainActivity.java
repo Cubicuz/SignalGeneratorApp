@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
         listViewMain = findViewById(R.id.linearLayoutMain);
         FloatingActionButton addNewSignalButton = findViewById(R.id.floatingActionButtonNewSignal);
         FloatingActionButton editSensorButton = findViewById(R.id.floatingActionButtonEditSensor);
+        FloatingActionButton marbleGameButton = findViewById(R.id.floatingActionButtonMarbleGame);
 
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
         sensorInput = new SensorInput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, findViewById(R.id.textViewX), findViewById(R.id.textViewY), findViewById(R.id.textViewZ));
@@ -82,10 +83,10 @@ public class MainActivity extends Activity {
             startActivity(intent);
         });
 
-        if (true) {
+        marbleGameButton.setOnClickListener (v -> {
             Intent intent = new Intent(MainActivity.this, MarbleGameActivity.class);
             startActivity(intent);
-        }
+        });
     }
 
     @Override

@@ -86,6 +86,7 @@ public class MarbleGameActivity extends Activity {
         mRightSpinner.setOnItemSelectedListener(itemSelectedListener);
         mBottomSpinner.setOnItemSelectedListener(itemSelectedListener);
 
+        marbleGame.reset();
     }
 
     private SignalWithAmplitude setSignal(String type, int direction){
