@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/settings_menu"
+          android:title="settings"
+          android:icon="@android:drawable/ic_menu_manage"
+          app:showAsAction="ifRoom"/>
+    <item android:id="@+id/add_signal_menu"
+          android:title="add signal"
+          android:icon="@android:drawable/ic_menu_add"
+          app:showAsAction="ifRoom"/>
+    <item android:id="@+id/marble_game_menu"
+          android:title="marble game"
+          android:icon="@android:drawable/ic_menu_compass"
+          app:showAsAction="ifRoom"/>
+</menu>

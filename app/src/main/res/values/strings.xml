@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SignalGeneratorApp</string>
+    <string name="app_name">SignalGenerator</string>
     <string name="preference_file_key">signalGeneratorAppPreferenceFileKey</string>
     <string name="storage_key_selected_preference">storage_key_selected_preference</string>
     <string name="storage_key_sensor_output_prefix">storage_sensorOutput_prefix</string>
