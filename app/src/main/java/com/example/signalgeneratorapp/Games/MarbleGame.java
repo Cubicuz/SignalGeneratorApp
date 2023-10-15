@@ -19,7 +19,7 @@ public class MarbleGame {
     private double maximumTilt = 10;
     private float bouncingVelocityLossfactor = -0.9f; // this has to be negative
     private long fieldMax = 1000;
-    private float speedFactor = 20f;
+    private float speedFactor = 50f;
     private long lastMillisTimeStamp;
     private GameThread gameThread;
     private UnitInputPortForSensorGrab unitInputPortForSensorGrabX, unitInputPortForSensorGrabY;
@@ -109,18 +109,19 @@ public class MarbleGame {
         normedPositionX = positionX / fieldMax;
         normedPositionY = positionY / fieldMax;
 
+
         if (normedPositionX > 0){
             xlow.input().set(0.0);
-            xhigh.input().set(normedPositionX);
+            xhigh.input().set(normedPositionX*normedPositionX);
         } else {
-            xlow.input().set(-normedPositionX);
+            xlow.input().set(-normedPositionX*normedPositionX);
             xhigh.input().set(0.0);
         }
         if (normedPositionY > 0){
             ylow.input().set(0.0);
-            yhigh.input().set(normedPositionY);
+            yhigh.input().set(normedPositionY*normedPositionY);
         } else {
-            ylow.input().set(-normedPositionY);
+            ylow.input().set(-normedPositionY*normedPositionY);
             yhigh.input().set(0.0);
         }
 

@@ -26,11 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private SensorManager sensorManager;
-    private Sensor rotationSensor;
-    private Spinner sensorSpinner;
-    private SensorInput sensorInput;
-    private ArrayAdapter<String> arrayAdapter;
     private RecyclerView listViewMain;
 
     @Override
@@ -44,26 +39,10 @@ public class MainActivity extends AppCompatActivity {
         ConnectionManager.getInstance().loadConnections();
 
         //SineSynth mSineSynth = new SineSynth();
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensorSpinner = findViewById(R.id.spinnerSensorSelect);
         listViewMain = findViewById(R.id.linearLayoutMain);
         FloatingActionButton addNewSignalButton = findViewById(R.id.floatingActionButtonNewSignal);
         FloatingActionButton editSensorButton = findViewById(R.id.floatingActionButtonEditSensor);
         FloatingActionButton marbleGameButton = findViewById(R.id.floatingActionButtonMarbleGame);
-
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
-        sensorInput = new SensorInput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, findViewById(R.id.textViewX), findViewById(R.id.textViewY), findViewById(R.id.textViewZ));
-
-        // list all the sensors present in the device
-        List<Sensor> deviceSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-
-        for (Sensor sensor: deviceSensors) {
-            if (sensor.getName() != null){
-                arrayAdapter.add(sensor.getName());
-            }
-        }
-        sensorSpinner.setAdapter(arrayAdapter);
 
         SensorSignalAdapter ssa = new SensorSignalAdapter();
         ssa.setOnClickListener((position, signal) -> {
@@ -106,10 +85,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.settings_menu:
+                startActivity(new Intent(MainActivity.this, SensorEditActivity.class));
                 return true;
             case R.id.add_signal_menu:
+                startActivity(new Intent(MainActivity.this, NewSignalActivity.class));
                 return true;
             case R.id.marble_game_menu:
+                startActivity(new Intent(MainActivity.this, MarbleGameActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -121,14 +103,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         SensorOutputManager.getInstance().start();
         SignalManager.getInstance().startAudio();
-        sensorManager.registerListener(sensorInput, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         SignalManager.getInstance().stopAudio();
-        sensorManager.unregisterListener(sensorInput);
         SensorOutputManager.getInstance().stop();
     }
 }

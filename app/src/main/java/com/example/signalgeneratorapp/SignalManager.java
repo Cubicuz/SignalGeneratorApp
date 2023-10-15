@@ -144,8 +144,10 @@ public final class SignalManager {
                  return addSignal(name, SineSignal::new);
              case KickSignal.type:
                  return addSignal(name, KickSignal::new);
-             case WaveSignal.type:
-                 return addSignal(name, WaveSignal::new);
+             case AmpWave.type:
+                 return addSignal(name, AmpWave::new);
+             case FreqWave.type:
+                 return addSignal(name, FreqWave::new);
              case WaveModFreq.type:
                  return addSignal(name, WaveModFreq::new);
              default:

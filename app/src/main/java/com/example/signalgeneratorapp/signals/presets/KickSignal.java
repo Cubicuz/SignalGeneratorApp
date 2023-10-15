@@ -22,7 +22,9 @@ public class KickSignal extends SignalWithAmplitude {
         synthesizer.add(multosc = new Multiply());
 
         pulseosc.amplitude.set(1);
-        pulseosc.frequency.set(1.0);
+        pulseosc.frequency.set(0.5);
+        // range is from -1 to 1
+        pulseosc.width.set(0.6);
 
         addosc.inputA.connect(pulseosc.output);
         addosc.inputB.set(1);

@@ -5,26 +5,6 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:keepScreenOn="true">
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="hello"/>
-    <TextView
-            android:id="@+id/textViewX"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    <TextView
-            android:id="@+id/textViewY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    <TextView
-            android:id="@+id/textViewZ"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    <Spinner
-            android:id="@+id/spinnerSensorSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

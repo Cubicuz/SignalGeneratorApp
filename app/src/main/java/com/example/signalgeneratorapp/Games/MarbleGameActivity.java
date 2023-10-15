@@ -15,9 +15,10 @@ import com.example.signalgeneratorapp.SignalManager;
 import com.example.signalgeneratorapp.signals.SensorOutput;
 import com.example.signalgeneratorapp.signals.Signal;
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude;
+import com.example.signalgeneratorapp.signals.presets.FreqWave;
 import com.example.signalgeneratorapp.signals.presets.KickSignal;
 import com.example.signalgeneratorapp.signals.presets.WaveModFreq;
-import com.example.signalgeneratorapp.signals.presets.WaveSignal;
+import com.example.signalgeneratorapp.signals.presets.AmpWave;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitOutputPort;
 
@@ -30,8 +31,9 @@ public class MarbleGameActivity extends Activity {
     private MarbleGame marbleGame;
     public final String MarbleGamePrefix = "Marble";
     public String[] directions = {"top", "left", "right", "bottom"};
-    private Spinner mTopSpinner, mLeftSpinner, mRightSpinner, mBottomSpinner;
+    private Spinner[] mSpinners = new Spinner[4];
     private SignalWithAmplitude[] mSignals = new SignalWithAmplitude[4];
+    private ArrayAdapter<String> AmplitudeSignalAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,30 +52,29 @@ public class MarbleGameActivity extends Activity {
         Button reset = findViewById(R.id.marbeGameResetButton);
         reset.setOnClickListener(v -> marbleGame.reset());
 
-        mTopSpinner = findViewById(R.id.marbleTopSpinner);
-        mLeftSpinner = findViewById(R.id.marbleLeftSpinner);
-        mRightSpinner = findViewById(R.id.marbleRightSpinner);
-        mBottomSpinner = findViewById(R.id.marbleBottomSpinner);
+        mSpinners[0] = findViewById(R.id.marbleTopSpinner);
+        mSpinners[1] = findViewById(R.id.marbleLeftSpinner);
+        mSpinners[2] = findViewById(R.id.marbleRightSpinner);
+        mSpinners[3] = findViewById(R.id.marbleBottomSpinner);
 
-        ArrayAdapter<String> AmplitudeSignalAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+        AmplitudeSignalAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
 
         AmplitudeSignalAdapter.add("none");
         AmplitudeSignalAdapter.add(KickSignal.type);
-        AmplitudeSignalAdapter.add(WaveSignal.type);
+        AmplitudeSignalAdapter.add(AmpWave.type);
+        AmplitudeSignalAdapter.add(FreqWave.type);
         AmplitudeSignalAdapter.add(WaveModFreq.type);
 
-        mTopSpinner.setAdapter(AmplitudeSignalAdapter);
-        mLeftSpinner.setAdapter(AmplitudeSignalAdapter);
-        mRightSpinner.setAdapter(AmplitudeSignalAdapter);
-        mBottomSpinner.setAdapter(AmplitudeSignalAdapter);
+        for (int i=0;i<4;i++){
+            mSpinners[i].setAdapter(AmplitudeSignalAdapter);
+        }
 
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent == mTopSpinner){setSignal(AmplitudeSignalAdapter.getItem(position), 0);}
-                else if (parent == mLeftSpinner) {setSignal(AmplitudeSignalAdapter.getItem(position), 1);}
-                else if (parent == mRightSpinner) {setSignal(AmplitudeSignalAdapter.getItem(position), 2);}
-                else if (parent == mBottomSpinner) {setSignal(AmplitudeSignalAdapter.getItem(position), 3);}
+                for (int i=0;i<4;i++){
+                    if (parent == mSpinners[i]){setSignal(AmplitudeSignalAdapter.getItem(position), i);}
+                }
             }
 
             @Override
@@ -81,23 +82,29 @@ public class MarbleGameActivity extends Activity {
 
             }
         };
-        mTopSpinner.setOnItemSelectedListener(itemSelectedListener);
-        mLeftSpinner.setOnItemSelectedListener(itemSelectedListener);
-        mRightSpinner.setOnItemSelectedListener(itemSelectedListener);
-        mBottomSpinner.setOnItemSelectedListener(itemSelectedListener);
+        for (int i=0;i<4;i++){
+            mSpinners[i].setOnItemSelectedListener(itemSelectedListener);
+        }
 
+        loadSignals();
         marbleGame.reset();
     }
 
+    private String getSignalName(int direction){
+        return MarbleGamePrefix + directions[direction];
+    }
     private SignalWithAmplitude setSignal(String type, int direction){
         BiFunction<String, Synthesizer, SignalWithAmplitude> fn;
-        String signalName = MarbleGamePrefix + directions[direction];
+        String signalName = getSignalName(direction);
         switch (type) {
             case KickSignal.type:
                 fn = KickSignal::new;
                 break;
-            case WaveSignal.type:
-                fn = WaveSignal::new;
+            case AmpWave.type:
+                fn = AmpWave::new;
+                break;
+            case FreqWave.type:
+                fn = FreqWave::new;
                 break;
             case WaveModFreq.type:
                 fn = WaveModFreq::new;
@@ -129,6 +136,15 @@ public class MarbleGameActivity extends Activity {
         ConnectionManager.getInstance().connectLineout(s.firstOutputPort(), 1);
         mSignals[direction] = s;
         return s;
+    }
+    private void loadSignals(){
+        for (int i=0;i<4;i++){
+            String signalName = getSignalName(i);
+            if (SignalManager.getInstance().signalNameExists(signalName)){
+                mSignals[i] = (SignalWithAmplitude) SignalManager.getInstance().getSignal(signalName);
+                mSpinners[i].setSelection(AmplitudeSignalAdapter.getPosition(mSignals[i].getType()));
+            }
+        }
     }
 
     private UnitOutputPort getOutputPortForDirection(int direction){

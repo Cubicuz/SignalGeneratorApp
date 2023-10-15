@@ -1,21 +1,20 @@
 package com.example.signalgeneratorapp.signals.presets;
 
-import com.example.signalgeneratorapp.signals.Signal;
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude;
 import com.jsyn.Synthesizer;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.unitgen.SineOscillator;
 
-public class WaveSignal extends SignalWithAmplitude {
+public class AmpWave extends SignalWithAmplitude {
     private final SineOscillator amplitudeWave;
     private final SineOscillator sound;
 
-    public WaveSignal(String name, Synthesizer synthesizer) {
+    public AmpWave(String name, Synthesizer synthesizer) {
         super(name, synthesizer);
         synthesizer.add(amplitudeWave = new SineOscillator());
         synthesizer.add(sound = new SineOscillator());
 
-        amplitudeWave.frequency.set(.5);
+        amplitudeWave.frequency.set(.2);
         amplitudeWave.frequency.setName("waveFrequency");
         amplitudeWave.amplitude.setName("amplitude");
         sound.frequency.setName("soundFrequency");
@@ -40,5 +39,5 @@ public class WaveSignal extends SignalWithAmplitude {
 
     @Override
     public String getType() { return type; }
-    public static final String type = "wavesignal";
+    public static final String type = "ampwave";
 }
