@@ -67,6 +67,12 @@ public final class SignalManager {
         signalsChanged.firePropertyChange("signal count", signalCount +1, signalCount);
     }
 
+    public void removeAll() {
+        //inefficient quick attempt
+        ArrayList<String> signalNames = new ArrayList<>(signals.keySet());
+        signalNames.forEach(s -> removeSignal(s));
+    }
+
     private final PropertyChangeSupport signalsChanged;
 
     public void addSignalsChangedListener(PropertyChangeListener pcl){

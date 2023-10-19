@@ -1,19 +1,12 @@
 <resources>
     <string name="app_name">SignalGenerator</string>
     <string name="preference_file_key">signalGeneratorAppPreferenceFileKey</string>
-    <string name="storage_key_selected_preference">storage_key_selected_preference</string>
+    <string name="storage_key_name_of_preference">storage_key_name_of_preference</string>
+
     <string name="storage_key_sensor_output_prefix">storage_sensorOutput_prefix</string>
     <string name="storage_key_signal_prefix">storage_signal_prefix</string>
     <string name="storage_key_signal_names_prefix">storage_signal_names_prefix</string>
     <string name="storage_key_connection_prefix">storage_connection_prefix</string>
     <string name="storage_key_lineout_connection_prefix">storage_lineout_connection_prefix</string>
     <string name="title_activity_marble_game">MarbleGameActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

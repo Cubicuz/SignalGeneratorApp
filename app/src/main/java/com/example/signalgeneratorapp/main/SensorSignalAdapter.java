@@ -1,10 +1,9 @@
 package com.example.signalgeneratorapp.main;
 
-import android.view.View;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +12,6 @@ import com.example.signalgeneratorapp.SignalManager;
 import com.example.signalgeneratorapp.signals.Signal;
 import org.jetbrains.annotations.NotNull;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
 
 public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapter.ViewHolder> {
@@ -56,12 +53,9 @@ public class SensorSignalAdapter extends RecyclerView.Adapter<SensorSignalAdapte
     public SensorSignalAdapter()
     {
         signalCollection = new LinkedList<>(SignalManager.getInstance().getSignalList());
-        SignalManager.getInstance().addSignalsChangedListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                signalCollection = new LinkedList<>(SignalManager.getInstance().getSignalList());
-                notifyDataSetChanged();
-            }
+        SignalManager.getInstance().addSignalsChangedListener(evt -> {
+            signalCollection = new LinkedList<>(SignalManager.getInstance().getSignalList());
+            notifyDataSetChanged();
         });
     }
 

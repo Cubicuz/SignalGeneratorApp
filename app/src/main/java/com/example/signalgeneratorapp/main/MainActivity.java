@@ -1,16 +1,10 @@
 package com.example.signalgeneratorapp.main;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,9 +15,8 @@ import com.example.signalgeneratorapp.Games.MarbleGameActivity;
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
+import com.example.signalgeneratorapp.Storage.StorageActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView listViewMain;
@@ -36,13 +29,11 @@ public class MainActivity extends AppCompatActivity {
         SensorOutputManager.createInstance(getApplicationContext());
 
         SignalManager.getInstance().loadFromPreferences();
-        ConnectionManager.getInstance().loadConnections();
+        ConnectionManager.getInstance().loadFromPreferences();
 
         //SineSynth mSineSynth = new SineSynth();
         listViewMain = findViewById(R.id.linearLayoutMain);
         FloatingActionButton addNewSignalButton = findViewById(R.id.floatingActionButtonNewSignal);
-        FloatingActionButton editSensorButton = findViewById(R.id.floatingActionButtonEditSensor);
-        FloatingActionButton marbleGameButton = findViewById(R.id.floatingActionButtonMarbleGame);
 
         SensorSignalAdapter ssa = new SensorSignalAdapter();
         ssa.setOnClickListener((position, signal) -> {
@@ -62,15 +53,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, NewSignalActivity.class);
             startActivity(intent);
         });
-        editSensorButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SensorEditActivity.class);
-            startActivity(intent);
-        });
 
-        marbleGameButton.setOnClickListener (v -> {
-            Intent intent = new Intent(MainActivity.this, MarbleGameActivity.class);
-            startActivity(intent);
-        });
     }
 
     @Override
@@ -93,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.marble_game_menu:
                 startActivity(new Intent(MainActivity.this, MarbleGameActivity.class));
                 return true;
+            case R.id.storage_menu:
+                startActivity(new Intent(MainActivity.this, StorageActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

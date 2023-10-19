@@ -209,7 +209,7 @@ public class ConnectionManager {
         return keys;
     }
 
-    public void loadConnections(){
+    public void loadFromPreferences(){
         generatePossibleStorageKeys().forEach(this::loadFromPreferences);
         loadLineoutConnection();
     }
