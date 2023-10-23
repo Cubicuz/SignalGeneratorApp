@@ -16,6 +16,7 @@ import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
 import com.example.signalgeneratorapp.Storage.StorageActivity;
+import com.example.signalgeneratorapp.Storage.StorageActivity2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, MarbleGameActivity.class));
                 return true;
             case R.id.storage_menu:
-                startActivity(new Intent(MainActivity.this, StorageActivity.class));
+                startActivity(new Intent(MainActivity.this, StorageActivity2.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

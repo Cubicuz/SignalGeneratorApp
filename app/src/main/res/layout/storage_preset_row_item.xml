@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonLoadFromPreset"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="5dp"
+            android:foreground="@android:drawable/ic_menu_set_as"/>
+    <TextView android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:text="Hallo"
+              android:textSize="20sp"
+              android:id="@+id/textViewPresetName"
+              app:layout_constraintStart_toEndOf="@id/buttonLoadFromPreset"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toStartOf="@id/buttonSaveToPreset"
+              android:layout_marginStart="5dp" android:layout_marginEnd="5dp"/>
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSaveToPreset"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonDeletePreset"
+            android:layout_marginEnd="5dp"
+            android:foreground="@android:drawable/ic_menu_save"/>
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonDeletePreset"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="5dp"
+            android:foreground="@android:drawable/ic_menu_delete"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
