@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp.Storage.ui.theme
+package com.example.signalgeneratorapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

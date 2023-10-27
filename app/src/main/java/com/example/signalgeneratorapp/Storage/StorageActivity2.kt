@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import com.example.signalgeneratorapp.IconCopy.SaveAs
 import com.example.signalgeneratorapp.IconCopy.Upload
-import com.example.signalgeneratorapp.Storage.ui.theme.SignalGeneratorAppTheme
+import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
 import com.example.signalgeneratorapp.StorageManager
 
 class StorageActivity2 : ComponentActivity() {
