@@ -15,12 +15,10 @@ import com.example.signalgeneratorapp.Games.MarbleGameActivity;
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
-import com.example.signalgeneratorapp.Storage.StorageActivity;
 import com.example.signalgeneratorapp.Storage.StorageActivity2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView listViewMain;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectionManager.getInstance().loadFromPreferences();
 
         //SineSynth mSineSynth = new SineSynth();
-        listViewMain = findViewById(R.id.linearLayoutMain);
+        RecyclerView listViewMain = findViewById(R.id.linearLayoutMain);
         FloatingActionButton addNewSignalButton = findViewById(R.id.floatingActionButtonNewSignal);
 
         SensorSignalAdapter ssa = new SensorSignalAdapter();
@@ -43,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(util.INTENT_SIGNAL_NAME, signal.name);
             startActivity(intent);
         });
-        ssa.setOnDeleteClickListener((position, signal) -> {
-            SignalManager.getInstance().removeSignal(signal.name);
-        });
+        ssa.setOnDeleteClickListener((position, signal) -> SignalManager.getInstance().removeSignal(signal.name));
 
         listViewMain.setLayoutManager(new LinearLayoutManager(this));
         listViewMain.setAdapter(ssa);
@@ -67,21 +63,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.settings_menu:
-                startActivity(new Intent(MainActivity.this, SensorEditActivity.class));
-                return true;
-            case R.id.add_signal_menu:
-                startActivity(new Intent(MainActivity.this, NewSignalActivity.class));
-                return true;
-            case R.id.marble_game_menu:
-                startActivity(new Intent(MainActivity.this, MarbleGameActivity.class));
-                return true;
-            case R.id.storage_menu:
-                startActivity(new Intent(MainActivity.this, StorageActivity2.class));
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.settings_menu) {
+            startActivity(new Intent(MainActivity.this, SensorEditActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.add_signal_menu) {
+            startActivity(new Intent(MainActivity.this, NewSignalActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.marble_game_menu) {
+            startActivity(new Intent(MainActivity.this, MarbleGameActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.marble_game_menu) {
+            startActivity(new Intent(MainActivity.this, StorageActivity2.class));
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

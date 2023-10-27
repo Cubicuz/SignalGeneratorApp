@@ -15,16 +15,16 @@ public class MarbleGame {
 
     private float positionX, positionY, velocityX, velocityY;
     private float normedPositionX, normedPositionY;
-    private float friction = 0.008f;
-    private double maximumTilt = 10;
-    private float bouncingVelocityLossfactor = -0.9f; // this has to be negative
+    private final float friction = 0.010f;
+    private final double maximumTilt = 10;
+    private final float bouncingVelocityLossfactor = -0.9f; // this has to be negative
     private long fieldMax = 1000;
     private float speedFactor = 50f;
     private long lastMillisTimeStamp;
     private GameThread gameThread;
     private UnitInputPortForSensorGrab unitInputPortForSensorGrabX, unitInputPortForSensorGrabY;
 
-    private LinearRampSignal xlow, xhigh, ylow, yhigh;
+    private final LinearRampSignal xlow, xhigh, ylow, yhigh;
 
     public MarbleGame(){
         unitInputPortForSensorGrabX = new UnitInputPortForSensorGrab("unitInputPortForSensorGrabX", true);
@@ -75,8 +75,6 @@ public class MarbleGame {
 
     /**
      * tilts go from -1 to 1
-     * @param tiltx
-     * @param tilty
      */
     protected void update(float tiltx, float tilty){
         long newTimestamp = java.lang.System.currentTimeMillis();
@@ -137,10 +135,10 @@ public class MarbleGame {
         public boolean xUpdated;
         public boolean yUpdated;
     }
-    private TiltUpdate tiltUpdate = new TiltUpdate();
-    private AtomicBoolean updateAvailable = new AtomicBoolean(false);
-    private AtomicBoolean running = new AtomicBoolean(true);
-    private BlockingQueue<Integer> dontSpinnlock = new ArrayBlockingQueue<>(1);
+    private final TiltUpdate tiltUpdate = new TiltUpdate();
+    private final AtomicBoolean updateAvailable = new AtomicBoolean(false);
+    private final AtomicBoolean running = new AtomicBoolean(true);
+    private final BlockingQueue<Integer> dontSpinnlock = new ArrayBlockingQueue<>(1);
     private class GameThread extends Thread{
         @Override
         public void run() {
@@ -151,7 +149,7 @@ public class MarbleGame {
                     throw new RuntimeException(e);
                 }
                 if (updateAvailable.get()) {
-                    update(tiltUpdate.tiltX, tiltUpdate.tiltY);
+                    update(-tiltUpdate.tiltX, tiltUpdate.tiltY);
                     tiltUpdate.xUpdated = false;
                     tiltUpdate.yUpdated = false;
                     updateAvailable.set(false);

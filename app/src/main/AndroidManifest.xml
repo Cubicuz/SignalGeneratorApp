@@ -19,9 +19,6 @@
                 android:label="@string/title_activity_storage2"
                 android:theme="@style/Theme.SignalGeneratorApp"/>
         <activity
-                android:name=".Storage.StorageActivity"
-                android:exported="false"/>
-        <activity
                 android:name=".Games.MarbleGameActivity"
                 android:exported="true">
         </activity>
