@@ -7,7 +7,7 @@
     <com.example.signalgeneratorapp.Games.MarbleGameView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            custom:exampleString="beispiel" custom:layout_constraintTop_toTopOf="parent"
+            custom:layout_constraintTop_toTopOf="parent"
             android:id="@+id/marbleGameView"
             custom:layout_constraintBottom_toTopOf="@+id/marbleTopSpinner"
             custom:layout_constraintEnd_toEndOf="parent"

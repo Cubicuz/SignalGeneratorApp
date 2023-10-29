@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.marble_game_menu) {
             startActivity(new Intent(MainActivity.this, MarbleGameActivity.class));
             return true;
-        } else if (item.getItemId() == R.id.marble_game_menu) {
+        } else if (item.getItemId() == R.id.storage_menu) {
             startActivity(new Intent(MainActivity.this, StorageActivity2.class));
             return true;
         }
