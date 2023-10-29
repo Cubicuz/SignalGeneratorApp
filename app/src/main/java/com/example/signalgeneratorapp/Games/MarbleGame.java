@@ -18,11 +18,13 @@ public class MarbleGame {
     private final float friction = 0.010f;
     private final double maximumTilt = 10;
     private final float bouncingVelocityLossfactor = -0.9f; // this has to be negative
-    private long fieldMax = 1000;
-    private float speedFactor = 50f;
+    private final long fieldMax = 1000;
+    private final float speedFactor = 50f;
     private long lastMillisTimeStamp;
+    private float tiltOffsetX, tiltOffsetY;
+    private boolean doCalibration;
     private GameThread gameThread;
-    private UnitInputPortForSensorGrab unitInputPortForSensorGrabX, unitInputPortForSensorGrabY;
+    private final UnitInputPortForSensorGrab unitInputPortForSensorGrabX, unitInputPortForSensorGrabY;
 
     private final LinearRampSignal xlow, xhigh, ylow, yhigh;
 
@@ -56,6 +58,9 @@ public class MarbleGame {
         velocityX = 0;
         velocityY = 0;
         update(0, 0);
+    }
+    public void calibrate(){
+        doCalibration = true;
     }
 
 
@@ -139,6 +144,17 @@ public class MarbleGame {
     private final AtomicBoolean updateAvailable = new AtomicBoolean(false);
     private final AtomicBoolean running = new AtomicBoolean(true);
     private final BlockingQueue<Integer> dontSpinnlock = new ArrayBlockingQueue<>(1);
+    private float calcOffset(float value, float offset){
+        if (value - offset > maximumTilt){
+            // wrap from positive to negative
+            return (float) (value - offset - 2 * maximumTilt);
+        } else if (value + offset < -maximumTilt){
+            // wrap from negative to positive
+            return (float) (value - offset + 2* maximumTilt);
+        }
+        // default
+        return value - offset;
+    }
     private class GameThread extends Thread{
         @Override
         public void run() {
@@ -149,7 +165,12 @@ public class MarbleGame {
                     throw new RuntimeException(e);
                 }
                 if (updateAvailable.get()) {
-                    update(-tiltUpdate.tiltX, tiltUpdate.tiltY);
+                    if (doCalibration){
+                        tiltOffsetX = tiltUpdate.tiltX;
+                        tiltOffsetY = tiltUpdate.tiltY;
+                        doCalibration = false;
+                    }
+                    update(-calcOffset(tiltUpdate.tiltX, tiltOffsetX), calcOffset(tiltUpdate.tiltY, tiltOffsetY));
                     tiltUpdate.xUpdated = false;
                     tiltUpdate.yUpdated = false;
                     updateAvailable.set(false);

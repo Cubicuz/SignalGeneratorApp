@@ -52,6 +52,9 @@ public class MarbleGameActivity extends Activity {
         Button reset = findViewById(R.id.marbeGameResetButton);
         reset.setOnClickListener(v -> marbleGame.reset());
 
+        Button calibrate = findViewById(R.id.marbeGameCalibrateButton);
+        calibrate.setOnClickListener(v -> marbleGame.calibrate());
+
         mSpinners[0] = findViewById(R.id.marbleTopSpinner);
         mSpinners[1] = findViewById(R.id.marbleLeftSpinner);
         mSpinners[2] = findViewById(R.id.marbleRightSpinner);
@@ -118,7 +121,7 @@ public class MarbleGameActivity extends Activity {
         }
         if (SignalManager.getInstance().signalNameExists(signalName)){
             Signal old = SignalManager.getInstance().getSignal(signalName);
-            if (old.getType() == type){
+            if (old.getType().equals(type)){
                 // we already have the correct signal
                 SignalWithAmplitude oldS = (SignalWithAmplitude) old;
                 ConnectionManager.getInstance().connect(oldS.amplitude(), getOutputPortForDirection(direction));
