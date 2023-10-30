@@ -4,7 +4,7 @@
                                                    android:layout_height="match_parent"
                                                    xmlns:custom="http://schemas.android.com/apk/res-auto"
                                                    android:keepScreenOn="true">
-    <com.example.signalgeneratorapp.Games.MarbleGameView
+    <com.example.signalgeneratorapp.Games.Marble.MarbleGameView
             android:layout_width="0dp"
             android:layout_height="0dp"
             custom:layout_constraintTop_toTopOf="parent"

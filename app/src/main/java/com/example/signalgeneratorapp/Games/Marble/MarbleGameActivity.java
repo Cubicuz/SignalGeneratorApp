@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp.Games;
+package com.example.signalgeneratorapp.Games.Marble;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -31,8 +31,8 @@ public class MarbleGameActivity extends Activity {
     private MarbleGame marbleGame;
     public final String MarbleGamePrefix = "Marble";
     public String[] directions = {"top", "left", "right", "bottom"};
-    private Spinner[] mSpinners = new Spinner[4];
-    private SignalWithAmplitude[] mSignals = new SignalWithAmplitude[4];
+    private final Spinner[] mSpinners = new Spinner[4];
+    private final SignalWithAmplitude[] mSignals = new SignalWithAmplitude[4];
     private ArrayAdapter<String> AmplitudeSignalAdapter;
 
     @Override
@@ -60,7 +60,7 @@ public class MarbleGameActivity extends Activity {
         mSpinners[2] = findViewById(R.id.marbleRightSpinner);
         mSpinners[3] = findViewById(R.id.marbleBottomSpinner);
 
-        AmplitudeSignalAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1);
+        AmplitudeSignalAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
 
         AmplitudeSignalAdapter.add("none");
         AmplitudeSignalAdapter.add(KickSignal.type);

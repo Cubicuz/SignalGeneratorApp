@@ -5,26 +5,24 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.widget.ProgressBar;
 import com.example.signalgeneratorapp.R;
 import com.example.signalgeneratorapp.StorageManager;
 import com.example.signalgeneratorapp.util;
-import com.jsyn.Synthesizer;
 import com.jsyn.ports.ConnectableInput;
-import com.jsyn.ports.ConnectableOutput;
 import com.jsyn.ports.UnitInputPort;
 import com.jsyn.ports.UnitOutputPort;
-import com.jsyn.unitgen.LinearRamp;
 import com.jsyn.unitgen.UnitSink;
 import com.softsynth.shared.time.TimeStamp;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 
-
 import java.util.*;
 
 import static com.example.signalgeneratorapp.util.SensorDimensions;
 
+/**
+ * One SensorOutput exists per sensor to reduce the amount of listeners
+ */
 public class SensorOutput{
     private final Sensor sensor;
     private final int dimensions;
@@ -60,6 +58,20 @@ public class SensorOutput{
             }
         }
     }
+    public interface SensorEventHandler{
+        void onSensorChanged(final float[] values, long nanoTimeStamp);
+    }
+    private final List<SensorEventHandler> sehs = Collections.synchronizedList(new ArrayList<>());
+    public void connect(SensorEventHandler seh){
+        if (sehs.contains(seh)){
+            return;
+        }
+        sehs.add(seh);
+        connectedCounter++;
+        if (connectedCounter == 1){
+            RegisterListener();
+        }
+    }
 
     public void disconnect(UnitInputPort unitInputPort, int dimension){
         if (dimension >= dimensions){
@@ -71,6 +83,17 @@ public class SensorOutput{
                 UnregisterListener();
             }
         }
+    }
+    public void disconnect(SensorEventHandler seh){
+        if (!sehs.contains(seh)){
+            return;
+        }
+        sehs.remove(seh);
+        connectedCounter--;
+        if (connectedCounter == 0){
+            UnregisterListener();
+        }
+
     }
 
     public boolean isSensorInUse(){
@@ -85,9 +108,10 @@ public class SensorOutput{
             }
             for (int i = 0; i<dimensions; i++){
                 int finalI = i;
-                connectedPorts.get(i).forEach(unitInputPort -> {convertAndSetSensorToPortValue(event.values[finalI], unitInputPort, getSensorOutputDimension(finalI));}
+                connectedPorts.get(i).forEach(unitInputPort -> convertAndSetSensorToPortValue(event.values[finalI], unitInputPort, getSensorOutputDimension(finalI))
                 );
             }
+            sehs.forEach(sensorEventHandler -> sensorEventHandler.onSensorChanged(event.values, event.timestamp));
         }
 
         @Override

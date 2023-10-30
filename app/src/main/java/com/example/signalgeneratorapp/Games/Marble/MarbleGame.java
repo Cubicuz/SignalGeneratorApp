@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp.Games;
+package com.example.signalgeneratorapp.Games.Marble;
 
 import com.example.signalgeneratorapp.SignalManager;
 import com.example.signalgeneratorapp.signals.LinearRampSignal;
@@ -181,7 +181,7 @@ public class MarbleGame {
 
     private class UnitInputPortForSensorGrab extends UnitInputPort{
 
-        private boolean isX; // is x? if not it is y
+        private final boolean isX; // is x? if not it is y
         public UnitInputPortForSensorGrab(String s, boolean X) {
             super(s);
             isX = X;

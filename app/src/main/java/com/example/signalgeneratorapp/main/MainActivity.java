@@ -11,7 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.*;
-import com.example.signalgeneratorapp.Games.MarbleGameActivity;
+import com.example.signalgeneratorapp.Games.Marble.MarbleGameActivity;
+import com.example.signalgeneratorapp.Games.Move.MoveGameActivity;
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity;
@@ -75,7 +76,11 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.storage_menu) {
             startActivity(new Intent(MainActivity.this, StorageActivity2.class));
             return true;
+        } else if (item.getItemId() == R.id.move_game_menu) {
+            startActivity(new Intent(MainActivity.this, MoveGameActivity.class));
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -19,8 +19,12 @@
                 android:label="@string/title_activity_storage2"
                 android:theme="@style/Theme.SignalGeneratorApp"/>
         <activity
-                android:name=".Games.MarbleGameActivity"
-                android:exported="true">
+                android:name=".Games.Marble.MarbleGameActivity"
+                android:exported="false">
+        </activity>
+        <activity
+                android:name=".Games.Move.MoveGameActivity"
+                android:exported="false">
         </activity>
         <activity
                 android:name=".ReducedUI.ConfigureActivity"

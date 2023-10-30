@@ -1,10 +1,9 @@
-package com.example.signalgeneratorapp.Games;
+package com.example.signalgeneratorapp.Games.Marble;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -15,8 +14,6 @@ public class MarbleGameView extends View {
     private float minMax(float min, float value, float max) {
         return Math.max(min, (Math.min(value, max)));
     }
-
-    private Drawable mExampleDrawable;
 
     private Paint mPaint;
 
@@ -85,13 +82,6 @@ public class MarbleGameView extends View {
         canvas.drawRect(mField, mPaint);
         mPaint.setColor(0xffff0000);
         canvas.drawCircle(mBallX + mPadding, mBallY + mPadding, mBallRadius, mPaint);
-
-        // Draw the example drawable on top of the text.
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }
     }
 
     @Override

@@ -11,7 +11,11 @@
     <item android:id="@+id/marble_game_menu"
           android:title="marble game"
           android:icon="@android:drawable/ic_menu_compass"
-          app:showAsAction="ifRoom"/>
+          app:showAsAction="never"/>
+    <item android:id="@+id/move_game_menu"
+          android:title="move game"
+          android:icon="@android:drawable/ic_menu_compass"
+          app:showAsAction="never"/>
     <item android:id="@+id/storage_menu"
           android:title="save/load"
           android:icon="@android:drawable/ic_menu_save"
