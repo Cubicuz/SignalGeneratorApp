@@ -29,7 +29,7 @@ import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 public class MarbleGameActivity extends Activity {
 
     private MarbleGame marbleGame;
-    public final String MarbleGamePrefix = "Marble";
+    public final String MarbleGamePrefix = "marblegame-";
     public String[] directions = {"top", "left", "right", "bottom"};
     private final Spinner[] mSpinners = new Spinner[4];
     private final SignalWithAmplitude[] mSignals = new SignalWithAmplitude[4];

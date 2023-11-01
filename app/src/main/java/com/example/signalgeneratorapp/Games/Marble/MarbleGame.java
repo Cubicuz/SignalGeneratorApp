@@ -31,10 +31,10 @@ public class MarbleGame {
     public MarbleGame(){
         unitInputPortForSensorGrabX = new UnitInputPortForSensorGrab("unitInputPortForSensorGrabX", true);
         unitInputPortForSensorGrabY = new UnitInputPortForSensorGrab("unitInputPortForSensorGrabY", false);
-        xlow = SignalManager.getInstance().addOrGetSignal("marbleXLow", LinearRampSignal::new);
-        xhigh = SignalManager.getInstance().addOrGetSignal("marbleXHigh", LinearRampSignal::new);
-        ylow = SignalManager.getInstance().addOrGetSignal("marbleYLow", LinearRampSignal::new);
-        yhigh = SignalManager.getInstance().addOrGetSignal("marbleYHigh", LinearRampSignal::new);
+        xlow = SignalManager.getInstance().addOrGetSignal("marbleXLowOutput", LinearRampSignal::new);
+        xhigh = SignalManager.getInstance().addOrGetSignal("marbleXHighOutput", LinearRampSignal::new);
+        ylow = SignalManager.getInstance().addOrGetSignal("marbleYLowOutput", LinearRampSignal::new);
+        yhigh = SignalManager.getInstance().addOrGetSignal("marbleYHighOutput", LinearRampSignal::new);
 
         xlow.time().set(0.01);
         xhigh.time().set(0.01);
