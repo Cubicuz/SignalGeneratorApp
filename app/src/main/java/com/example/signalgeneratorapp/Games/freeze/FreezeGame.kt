@@ -1,6 +1,5 @@
 package com.example.signalgeneratorapp.Games.freeze
 
-import android.os.SystemClock
 import com.example.signalgeneratorapp.Games.Move.MoveGame
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.StorageManager
@@ -43,8 +42,6 @@ class FreezeGame {
     private val rotationSensorEvents = ArrayBlockingQueue<MoveGame.SensorEvent>(100)
     private var referenceAccelerationSensorEvent = MoveGame.SensorEvent(FloatArray(3), 0L)
     private var referenceRotationSensorEvent = MoveGame.SensorEvent(FloatArray(3), 0L)
-    private var tickTimeStamp: Long = SystemClock.elapsedRealtimeNanos()
-    private val gameTickTimeInNanos: Long = 100_000_000
 
     private val output: LinearRampSignal = SignalManager.getInstance().addOrGetSignal("freezeOutput", ::LinearRampSignal)
     init {
