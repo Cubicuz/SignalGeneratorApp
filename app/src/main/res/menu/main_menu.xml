@@ -16,6 +16,10 @@
           android:title="move game"
           android:icon="@android:drawable/ic_menu_compass"
           app:showAsAction="never"/>
+     <item android:id="@+id/freeze_game_menu"
+          android:title="freeze game"
+          android:icon="@android:drawable/ic_menu_compass"
+          app:showAsAction="never"/>
     <item android:id="@+id/storage_menu"
           android:title="save/load"
           android:icon="@android:drawable/ic_menu_save"

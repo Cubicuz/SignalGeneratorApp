@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp.Games.Move
+package com.example.signalgeneratorapp.Games.freeze
 
 import android.hardware.Sensor
 import android.os.Bundle
@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.signalgeneratorapp.ConnectionManager
+import com.example.signalgeneratorapp.Games.Move.MoveGame.SensorEvent
 import com.example.signalgeneratorapp.SensorOutputManager
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
@@ -32,11 +33,15 @@ import com.example.signalgeneratorapp.signals.presets.WaveModFreq
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
 import com.jsyn.Synthesizer
 
-class MoveGameActivity : ComponentActivity() {
-    internal val moveGame = MoveGame()
-    private var sensorCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  moveGame.provideSensorEvent(MoveGame.SensorEvent(values.clone(), nanoTimeStamp))}
+class FreezeGameActivity : ComponentActivity () {
+    internal val freezeGame = FreezeGame()
+    private var sensorAccCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  freezeGame.provideAccelerationSensorEvent(
+        SensorEvent(values.clone(), nanoTimeStamp))}
+    private var sensorRotCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  freezeGame.provideRotationSensorEvent(
+        SensorEvent(values.clone(), nanoTimeStamp))}
     private var signal : SignalWithAmplitude? = null
-    private val signalName = "movegame-signal"
+    private val signalName = "freezegame-signal"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,11 +54,13 @@ class MoveGameActivity : ComponentActivity() {
             // on below line we are keeping screen as ON.
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        moveGame.updateTickListener = {
-            intensity.value = moveGame.intensity
-            highestWiggle.value = moveGame.highestWiggle
+        freezeGame.updateTickListener = {
+            intensity.value = freezeGame.intensity
+            accelerationIntensity.value = freezeGame.latestAcceleration
+            rotationIntensity.value = freezeGame.latestRotation
         }
-        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_ACCELEROMETER).connect(sensorCallback)
+        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_ACCELEROMETER).connect(sensorAccCallback)
+        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).connect(sensorRotCallback)
         signal = SignalManager.getInstance().getSignal(signalName) as SignalWithAmplitude?
         selectedSignalType.value = signal?.type ?: "none"
         intensity.value = 0.0f
@@ -61,15 +68,15 @@ class MoveGameActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        moveGame.start()
+        freezeGame.start()
     }
 
     override fun onStop() {
         super.onStop()
-        moveGame.stop()
-        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_ACCELEROMETER).disconnect(sensorCallback)
+        freezeGame.stop()
+        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_ACCELEROMETER).disconnect(sensorAccCallback)
+        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).disconnect(sensorRotCallback)
     }
-
     override fun onResume() {
         super.onResume()
         SensorOutputManager.getInstance().start()
@@ -98,7 +105,7 @@ class MoveGameActivity : ComponentActivity() {
             if (old.type.equals(type)){
                 // we already have the correct signal
                 signal = old as SignalWithAmplitude?
-                ConnectionManager.getInstance().connect(signal?.amplitude(), moveGame.getOutputPort())
+                ConnectionManager.getInstance().connect(signal?.amplitude(), freezeGame.getOutputPort())
                 return
             } else {
                 // delete the unfitting
@@ -107,77 +114,65 @@ class MoveGameActivity : ComponentActivity() {
         }
 
         signal = SignalManager.getInstance().addSignal(signalName, constructor)
-        ConnectionManager.getInstance().connect(signal?.amplitude(), moveGame.getOutputPort())
+        ConnectionManager.getInstance().connect(signal?.amplitude(), freezeGame.getOutputPort())
         ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 0)
         ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 1)
     }
 }
 
-internal val intensity = mutableStateOf(0.5f)
-internal val highestWiggle = mutableStateOf(0.5f)
+internal val intensity = mutableStateOf(0.0f)
+internal val accelerationIntensity = mutableStateOf(0.0f)
+internal val rotationIntensity = mutableStateOf(0.0f)
 internal val expanded = mutableStateOf(false)
 internal val selectedSignalType = mutableStateOf("none")
 internal val signalTypes = listOf("none", KickSignal.type, AmpWave.type, FreqWave.type, WaveModFreq.type)
+
 @Composable
-internal fun Content(mva: MoveGameActivity? = null) {
+fun Content(fga: FreezeGameActivity? = null) {
     val fontSize = 20.sp
     val mIntensity by intensity
-    val mHighestWiggle by highestWiggle
+    val mAccIntensity by accelerationIntensity
+    val mRotIntensity by rotationIntensity
     val mExpanded by expanded
     val mSelectedSignalType by selectedSignalType
 
-    val mWiggleThreshold = remember { mutableStateOf(mva?.moveGame?.wiggleThreshold.toString())}
-    val mStrongWiggleThreshold = remember { mutableStateOf(mva?.moveGame?.strongWiggleThreshold.toString())}
-    val mIncrease = remember { mutableStateOf(mva?.moveGame?.intensityIncrement.toString())}
-    val mStrongWiggleDecrement = remember { mutableStateOf(mva?.moveGame?.strongWiggleDecrement.toString())}
+    val mAccFactor = remember { mutableStateOf(fga?.freezeGame?.accelerationFactor.toString()) }
+    val mRotFactor = remember { mutableStateOf(fga?.freezeGame?.rotationFactor.toString()) }
 
-
-    Column (Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Text("Intensity:", fontSize = fontSize)
-        Slider(value = mIntensity,
-            onValueChange = { mva!!.moveGame.intensity = it
-            intensity.value = it})
-        Text("HighestWiggle:", fontSize = fontSize)
         LinearProgressIndicator(
-            progress = mHighestWiggle
+            progress = mIntensity
         )
-        Text(mHighestWiggle.toString(), fontSize = fontSize)
-        Text("WiggleThreshold:", fontSize = fontSize)
+        Text("Acceleration intensity:", fontSize = fontSize)
+        Text(mAccIntensity.toString(), fontSize = fontSize)
+        Text("Rotation intensity:", fontSize = fontSize)
+        Text(mRotIntensity.toString(), fontSize = fontSize)
+        Text("Acceleration Factor:", fontSize = fontSize)
         TextField(
-            value = mWiggleThreshold.value,
+            value = mAccFactor.value,
             onValueChange = {
-                mva?.moveGame?.wiggleThreshold = it.toFloat()
-                mWiggleThreshold.value = mva?.moveGame?.wiggleThreshold.toString()
-                            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
-        Text("StrongWiggleThreshold:", fontSize = fontSize)
-        TextField(
-            value = mStrongWiggleThreshold.value,
-            onValueChange = {
-                mva?.moveGame?.strongWiggleThreshold = it.toFloat()
-                mStrongWiggleThreshold.value = mva?.moveGame?.strongWiggleThreshold.toString()
+                fga?.freezeGame?.accelerationFactor = it.toFloat()
+                mAccFactor.value = fga?.freezeGame?.accelerationFactor.toString()
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-        Text("StrongWiggleDecrement:", fontSize = fontSize)
+        Text("Rotation Factor:", fontSize = fontSize)
         TextField(
-            value = mStrongWiggleDecrement.value,
+            value = mRotFactor.value,
             onValueChange = {
-                mva?.moveGame?.strongWiggleDecrement = it.toFloat()
-                mStrongWiggleDecrement.value = mva?.moveGame?.strongWiggleDecrement.toString()
+                fga?.freezeGame?.rotationFactor = it.toFloat()
+                mRotFactor.value = fga?.freezeGame?.rotationFactor.toString()
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-        Text("Increment without wiggle:", fontSize = fontSize)
-        TextField(
-            value = mIncrease.value,
-            onValueChange = {
-                mva?.moveGame?.intensityIncrement = it.toFloat()
-                mIncrease.value = mva?.moveGame?.intensityIncrement.toString()
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
+        Button(onClick = {
+            fga?.freezeGame?.reset()
+        }){
+            Text("Reset position")
+        }
+
+
         Row {
             Text("Signal: ", fontSize = fontSize)
             Box(Modifier.fillMaxSize().wrapContentSize(Alignment.TopStart)){
@@ -192,9 +187,9 @@ internal fun Content(mva: MoveGameActivity? = null) {
                 ){
                     for (signalItem in signalTypes) {
                         DropdownMenuItem(onClick = {
-                                selectedSignalType.value = signalItem
-                                mva?.setSignal(signalItem)
-                                                   },
+                            selectedSignalType.value = signalItem
+                            fga?.setSignal(signalItem)
+                        },
                             text = { Text(signalItem) })
                     }
                 }
@@ -202,7 +197,6 @@ internal fun Content(mva: MoveGameActivity? = null) {
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

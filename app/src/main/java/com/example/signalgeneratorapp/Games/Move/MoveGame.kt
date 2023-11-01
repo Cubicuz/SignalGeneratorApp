@@ -37,7 +37,7 @@ class MoveGame {
             field = value
             StorageManager.getInstance().storeGlobal(incrementStorageKey, value)
         }
-    var intensityMaximum = 1.0F
+    private val intensityMaximum = 1.0F
 
     var highestWiggle = 0.0F
 

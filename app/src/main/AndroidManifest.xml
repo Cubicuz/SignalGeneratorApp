@@ -27,6 +27,10 @@
                 android:exported="false">
         </activity>
         <activity
+                android:name=".Games.freeze.FreezeGameActivity"
+                android:exported="false">
+        </activity>
+        <activity
                 android:name=".ReducedUI.ConfigureActivity"
                 android:exported="false"/>
         <activity
