@@ -128,6 +128,8 @@ fun Content(mva: MoveGameActivity? = null) {
 
     val mWiggleThreshold = remember { mutableStateOf(mva?.moveGame?.wiggleThreshold.toString())}
     val mStrongWiggleThreshold = remember { mutableStateOf(mva?.moveGame?.strongWiggleThreshold.toString())}
+    val mIncrease = remember { mutableStateOf(mva?.moveGame?.intensityIncrement.toString())}
+    val mStrongWiggleDecrement = remember { mutableStateOf(mva?.moveGame?.strongWiggleDecrement.toString())}
 
 
     Column (Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -155,7 +157,25 @@ fun Content(mva: MoveGameActivity? = null) {
             onValueChange = {
                 mva?.moveGame?.strongWiggleThreshold = it.toFloat()
                 mStrongWiggleThreshold.value = mva?.moveGame?.strongWiggleThreshold.toString()
-                            },
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        )
+        Text("StrongWiggleDecrement:", fontSize = fontSize)
+        TextField(
+            value = mStrongWiggleDecrement.value,
+            onValueChange = {
+                mva?.moveGame?.strongWiggleDecrement = it.toFloat()
+                mStrongWiggleDecrement.value = mva?.moveGame?.strongWiggleDecrement.toString()
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        )
+        Text("Increment without wiggle:", fontSize = fontSize)
+        TextField(
+            value = mIncrease.value,
+            onValueChange = {
+                mva?.moveGame?.intensityIncrement = it.toFloat()
+                mIncrease.value = mva?.moveGame?.intensityIncrement.toString()
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
         Row {

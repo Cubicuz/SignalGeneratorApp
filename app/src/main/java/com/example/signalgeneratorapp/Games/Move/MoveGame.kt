@@ -23,10 +23,20 @@ class MoveGame {
             field = value
             StorageManager.getInstance().storeGlobal(strongWiggleThresholdStorageKey, value)
         }
-    var strongWiggleDecrement = 0.01F
+    private val strongWiggleDecrementStorageKey = "moveGameStrongWiggleDecrementStorageKey"
+    var strongWiggleDecrement : Float = StorageManager.getInstance().loadGlobalFloat(strongWiggleDecrementStorageKey, 0.01F)
+        set(value) {
+            field = value
+            StorageManager.getInstance().storeGlobal(strongWiggleDecrementStorageKey, value)
+        }
 
     var intensity = 0.0F
-    var intensityIncrement = 0.001F
+    private val incrementStorageKey = "moveGameIncrementStorageKey"
+    var intensityIncrement : Float = StorageManager.getInstance().loadGlobalFloat(incrementStorageKey, 0.001F)
+        set(value) {
+            field = value
+            StorageManager.getInstance().storeGlobal(incrementStorageKey, value)
+        }
     var intensityMaximum = 1.0F
 
     var highestWiggle = 0.0F
