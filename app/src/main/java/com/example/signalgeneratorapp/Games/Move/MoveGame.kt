@@ -2,6 +2,7 @@ package com.example.signalgeneratorapp.Games.Move
 
 import android.os.SystemClock
 import com.example.signalgeneratorapp.SignalManager
+import com.example.signalgeneratorapp.StorageManager
 import com.example.signalgeneratorapp.signals.LinearRampSignal
 import com.jsyn.ports.UnitOutputPort
 import java.lang.Float.max
@@ -10,8 +11,18 @@ import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MoveGame {
-    var wiggleThreshold = 10.0F
-    var strongWiggleThreshold = 50.0F
+    private val wiggleThresholdStorageKey = "moveGameWiggleThresholdStorageKey"
+    var wiggleThreshold : Float = StorageManager.getInstance().loadGlobalFloat(wiggleThresholdStorageKey, 10F)
+        set(value) {
+            field = value
+            StorageManager.getInstance().storeGlobal(wiggleThresholdStorageKey, value)
+        }
+    private val strongWiggleThresholdStorageKey = "moveGameStrongWiggleThresholdStorageKey"
+    var strongWiggleThreshold : Float = StorageManager.getInstance().loadGlobalFloat(strongWiggleThresholdStorageKey, 50F)
+        set(value) {
+            field = value
+            StorageManager.getInstance().storeGlobal(strongWiggleThresholdStorageKey, value)
+        }
     var strongWiggleDecrement = 0.01F
 
     var intensity = 0.0F
@@ -85,6 +96,7 @@ class MoveGame {
     fun stop() {
         running.set(false)
         sensorEvents.offer(lastSensorEvent)
+        output.input().set(0.0)
     }
 
     data class SensorEvent (var values: FloatArray, var nanoTimeStamp: Long)

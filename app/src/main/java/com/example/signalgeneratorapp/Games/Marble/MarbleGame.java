@@ -50,6 +50,10 @@ public class MarbleGame {
     public void stop(){
         running.set(false);
         dontSpinnlock.offer(1);
+        xlow.input().set(0.0);
+        xhigh.input().set(0.0);
+        ylow.input().set(0.0);
+        yhigh.input().set(0.0);
     }
 
     public void reset(){

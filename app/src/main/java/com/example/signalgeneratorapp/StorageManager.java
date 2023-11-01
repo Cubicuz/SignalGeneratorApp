@@ -26,6 +26,10 @@ public class StorageManager {
         editor.apply();
     }
 
+    public void storeGlobal(String key, Float value){
+        sharedGlobalsPref.edit().putFloat(key, value).apply();
+    }
+
     public void storeSet(String key, Set<String> set){
         SharedPreferences.Editor editor = sharedCurrentPref.edit();
         editor.putStringSet(key, set);
@@ -76,6 +80,9 @@ public class StorageManager {
 
     public String load(String key){
         return sharedCurrentPref.getString(key, "");
+    }
+    public Float loadGlobalFloat(String key, Float def){
+        return sharedGlobalsPref.getFloat(key, def);
     }
 
     public Set<String> loadSet(String key){

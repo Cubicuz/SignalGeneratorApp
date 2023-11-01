@@ -96,7 +96,7 @@ public class MarbleGameActivity extends Activity {
     private String getSignalName(int direction){
         return MarbleGamePrefix + directions[direction];
     }
-    private SignalWithAmplitude setSignal(String type, int direction){
+    private void setSignal(String type, int direction){
         BiFunction<String, Synthesizer, SignalWithAmplitude> fn;
         String signalName = getSignalName(direction);
         switch (type) {
@@ -115,7 +115,7 @@ public class MarbleGameActivity extends Activity {
             case "none":
                 SignalManager.getInstance().removeSignal(signalName);
                 mSignals[direction] = null;
-                return null;
+                return;
             default:
                 throw new RuntimeException("this was not expected");
         }
@@ -126,7 +126,7 @@ public class MarbleGameActivity extends Activity {
                 SignalWithAmplitude oldS = (SignalWithAmplitude) old;
                 ConnectionManager.getInstance().connect(oldS.amplitude(), getOutputPortForDirection(direction));
                 mSignals[direction] = oldS;
-                return oldS;
+                return;
             } else {
                 // delete the unfitting
                 SignalManager.getInstance().removeSignal(signalName);
@@ -138,7 +138,6 @@ public class MarbleGameActivity extends Activity {
         ConnectionManager.getInstance().connectLineout(s.firstOutputPort(), 0);
         ConnectionManager.getInstance().connectLineout(s.firstOutputPort(), 1);
         mSignals[direction] = s;
-        return s;
     }
     private void loadSignals(){
         for (int i=0;i<4;i++){
