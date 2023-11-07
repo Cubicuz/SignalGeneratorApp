@@ -7,9 +7,14 @@ Maybe allow multiple Device setups with mqtt
 
 i use jsyn for doing the audio part so i only have to do the interface
 
-# Feature wishes
- - multiple presets
- - multiple saves
+# Feature ideas
+ - random generator
+ - Main activity should contain buttons to the other activities
+   - List of all Signals should be a separate activity
+ - performance monitoring
+ - workout integration
+ - multi audio output (Bluetooth, Aux, Speaker)
+ - signalEdit from games
 
 ## more intuitive interaction
 ### input
