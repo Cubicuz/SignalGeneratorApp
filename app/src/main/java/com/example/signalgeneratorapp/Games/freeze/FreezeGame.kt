@@ -36,6 +36,22 @@ class FreezeGame {
 
     private val setRefAcc = AtomicBoolean(false)
     private val setRefRot = AtomicBoolean(false)
+
+
+    private val enabledDimensionsStorageKey = "moveGameEnabledDimensionsStorageKey"
+    private val enabledDimensions = Array(3) { AtomicBoolean() }
+    fun enableDimension(dimension : Int, enable : Boolean){
+        enabledDimensions[dimension].set(enable)
+        StorageManager.getInstance().storeGlobal(enabledDimensionsStorageKey+dimension, enable)
+    }
+    fun dimensionEnabled (dimension : Int) : Boolean {
+        return enabledDimensions[dimension].get()
+    }
+    init {
+        for (i in 0..2){
+            enabledDimensions[i].set(StorageManager.getInstance().loadGlobalBoolean(enabledDimensionsStorageKey+i, true))
+        }
+    }
     fun reset(){ setRefAcc.set(true); setRefRot.set(true)}
 
     private val accelerationSensorEvents = ArrayBlockingQueue<MoveGame.SensorEvent>(100)
@@ -91,10 +107,22 @@ class FreezeGame {
         updateTickListener?.invoke()
     }
     private fun calcMovementDiff(s1: MoveGame.SensorEvent, s2: MoveGame.SensorEvent): Float {
-        val vecX = s2.values[0] - s1.values[0]
-        val vecY = s2.values[1] - s1.values[1]
-        val vecZ = s2.values[2] - s1.values[2]
-        return vecX * vecX + vecY * vecY + vecZ * vecZ
+        var vecX = 0f
+        var vecY = 0f
+        var vecZ = 0f
+        if (enabledDimensions[0].get()){
+            vecX = s2.values[0] - s1.values[0]
+            vecX *= vecX
+        }
+        if (enabledDimensions[1].get()){
+            vecY = s2.values[1] - s1.values[1]
+            vecY *= vecY
+        }
+        if (enabledDimensions[2].get()){
+            vecZ = s2.values[2] - s1.values[2]
+            vecZ *= vecZ
+        }
+        return vecX + vecY + vecZ
     }
 
     private val running = AtomicBoolean(true)

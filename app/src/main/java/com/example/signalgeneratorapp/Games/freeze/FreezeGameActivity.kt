@@ -139,6 +139,10 @@ fun Content(fga: FreezeGameActivity? = null) {
     val mAccFactor = remember { mutableStateOf(fga?.freezeGame?.accelerationFactor.toString()) }
     val mRotFactor = remember { mutableStateOf(fga?.freezeGame?.rotationFactor.toString()) }
 
+    val mSwitchX = remember { mutableStateOf(fga?.freezeGame?.dimensionEnabled(0) ?: true) }
+    val mSwitchY = remember { mutableStateOf(fga?.freezeGame?.dimensionEnabled(1) ?: true) }
+    val mSwitchZ = remember { mutableStateOf(fga?.freezeGame?.dimensionEnabled(2) ?: true) }
+
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Text("Intensity:", fontSize = fontSize)
         LinearProgressIndicator(
@@ -175,7 +179,7 @@ fun Content(fga: FreezeGameActivity? = null) {
 
         Row {
             Text("Signal: ", fontSize = fontSize)
-            Box(Modifier.fillMaxSize().wrapContentSize(Alignment.TopStart)){
+            Box(Modifier.fillMaxWidth().wrapContentSize(Alignment.TopStart)){
                 Text(
                     mSelectedSignalType,
                     modifier = Modifier.fillMaxWidth()
@@ -194,6 +198,42 @@ fun Content(fga: FreezeGameActivity? = null) {
                     }
                 }
             }
+        }
+        Row (verticalAlignment = Alignment.CenterVertically) {
+            Text("Dimension X: ",
+                fontSize = fontSize
+            )
+            Switch(
+                checked = mSwitchX.value,
+                onCheckedChange = {
+                    mSwitchX.value = it
+                    fga?.freezeGame?.enableDimension(0, it)
+                }
+            )
+        }
+        Row (verticalAlignment = Alignment.CenterVertically) {
+            Text("Dimension Y: ",
+                fontSize = fontSize
+            )
+            Switch(
+                checked = mSwitchY.value,
+                onCheckedChange = {
+                    mSwitchY.value = it
+                    fga?.freezeGame?.enableDimension(1, it)
+                }
+            )
+        }
+        Row (verticalAlignment = Alignment.CenterVertically) {
+            Text("Dimension Z: ",
+                fontSize = fontSize
+            )
+            Switch(
+                checked = mSwitchZ.value,
+                onCheckedChange = {
+                    mSwitchZ.value = it
+                    fga?.freezeGame?.enableDimension(2, it)
+                }
+            )
         }
     }
 }
