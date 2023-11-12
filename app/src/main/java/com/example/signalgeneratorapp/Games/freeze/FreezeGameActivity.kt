@@ -1,5 +1,6 @@
 package com.example.signalgeneratorapp.Games.freeze
 
+import android.content.Intent
 import android.hardware.Sensor
 import android.os.Bundle
 import android.view.WindowManager
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.example.signalgeneratorapp.ConnectionManager
 import com.example.signalgeneratorapp.Games.Move.MoveGame.SensorEvent
 import com.example.signalgeneratorapp.SensorOutputManager
+import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
 import com.example.signalgeneratorapp.signals.presets.AmpWave
@@ -31,6 +33,7 @@ import com.example.signalgeneratorapp.signals.presets.FreqWave
 import com.example.signalgeneratorapp.signals.presets.KickSignal
 import com.example.signalgeneratorapp.signals.presets.WaveModFreq
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
+import com.example.signalgeneratorapp.util
 import com.jsyn.Synthesizer
 
 class FreezeGameActivity : ComponentActivity () {
@@ -40,7 +43,7 @@ class FreezeGameActivity : ComponentActivity () {
     private var sensorRotCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  freezeGame.provideRotationSensorEvent(
         SensorEvent(values.clone(), nanoTimeStamp))}
     private var signal : SignalWithAmplitude? = null
-    private val signalName = "freezegame-signal"
+    val signalName = "freezegame-signal"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,16 +173,28 @@ fun Content(fga: FreezeGameActivity? = null) {
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-        Button(onClick = {
-            fga?.freezeGame?.reset()
-        }){
-            Text("Reset position")
+        Row (horizontalArrangement = Arrangement.spacedBy(5.dp))
+        {
+            Button(onClick = {
+                fga?.freezeGame?.reset()
+            }){
+                Text("Reset position")
+            }
+
+            Button(onClick = {
+                val i = Intent(fga, SignalEditActivity::class.java)
+                i.putExtra(util.INTENT_SIGNAL_NAME, fga?.signalName)
+                fga?.startActivity(i)
+            }, enabled = com.example.signalgeneratorapp.Games.Move.selectedSignalType.value != "none"
+            ){
+                Text("Edit selected signal")
+            }
         }
 
 
         Row {
             Text("Signal: ", fontSize = fontSize)
-            Box(Modifier.fillMaxWidth().wrapContentSize(Alignment.TopStart)){
+            Box(Modifier.wrapContentSize(Alignment.TopStart)){
                 Text(
                     mSelectedSignalType,
                     modifier = Modifier.fillMaxWidth()

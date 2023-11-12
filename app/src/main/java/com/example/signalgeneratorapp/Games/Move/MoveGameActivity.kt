@@ -1,5 +1,6 @@
 package com.example.signalgeneratorapp.Games.Move
 
+import android.content.Intent
 import android.hardware.Sensor
 import android.os.Bundle
 import android.view.WindowManager
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.signalgeneratorapp.ConnectionManager
 import com.example.signalgeneratorapp.SensorOutputManager
+import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
 import com.example.signalgeneratorapp.signals.presets.AmpWave
@@ -30,13 +32,14 @@ import com.example.signalgeneratorapp.signals.presets.FreqWave
 import com.example.signalgeneratorapp.signals.presets.KickSignal
 import com.example.signalgeneratorapp.signals.presets.WaveModFreq
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
+import com.example.signalgeneratorapp.util
 import com.jsyn.Synthesizer
 
 class MoveGameActivity : ComponentActivity() {
     internal val moveGame = MoveGame()
     private var sensorCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  moveGame.provideSensorEvent(MoveGame.SensorEvent(values.clone(), nanoTimeStamp))}
     private var signal : SignalWithAmplitude? = null
-    private val signalName = "movegame-signal"
+    val signalName = "movegame-signal"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -118,6 +121,7 @@ internal val highestWiggle = mutableStateOf(0.5f)
 internal val expanded = mutableStateOf(false)
 internal val selectedSignalType = mutableStateOf("none")
 internal val signalTypes = listOf("none", KickSignal.type, AmpWave.type, FreqWave.type, WaveModFreq.type)
+
 @Composable
 internal fun Content(mva: MoveGameActivity? = null) {
     val fontSize = 20.sp
@@ -180,7 +184,7 @@ internal fun Content(mva: MoveGameActivity? = null) {
         )
         Row {
             Text("Signal: ", fontSize = fontSize)
-            Box(Modifier.fillMaxSize().wrapContentSize(Alignment.TopStart)){
+            Box(Modifier.wrapContentSize(Alignment.TopStart)){
                 Text(
                     mSelectedSignalType,
                     modifier = Modifier.fillMaxWidth()
@@ -199,6 +203,14 @@ internal fun Content(mva: MoveGameActivity? = null) {
                     }
                 }
             }
+        }
+        Button(onClick = {
+            val i = Intent(mva, SignalEditActivity::class.java)
+            i.putExtra(util.INTENT_SIGNAL_NAME, mva?.signalName)
+            mva?.startActivity(i)
+        }, enabled = selectedSignalType.value != "none"
+        ){
+            Text("Edit selected signal")
         }
     }
 }
