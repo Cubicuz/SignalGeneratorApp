@@ -28,10 +28,6 @@ import com.example.signalgeneratorapp.SensorOutputManager
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
-import com.example.signalgeneratorapp.signals.presets.AmpWave
-import com.example.signalgeneratorapp.signals.presets.FreqWave
-import com.example.signalgeneratorapp.signals.presets.KickSignal
-import com.example.signalgeneratorapp.signals.presets.WaveModFreq
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
 import com.example.signalgeneratorapp.util
 import com.jsyn.Synthesizer
@@ -94,13 +90,14 @@ class FreezeGameActivity : ComponentActivity () {
 
     internal fun setSignal(type : String){
         var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ? = null
-        when (type){
-            KickSignal.type -> constructor = ::KickSignal
-            AmpWave.type -> constructor = ::AmpWave
-            FreqWave.type -> constructor = ::FreqWave
-            WaveModFreq.type -> constructor = ::WaveModFreq
-            "none" -> SignalManager.getInstance().removeSignal(signalName)
-            else -> throw RuntimeException("this was not expected")
+
+        if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
+            constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]
+        } else if (type.equals("none")){
+            SignalManager.getInstance().removeSignal(signalName)
+            return
+        } else {
+            throw RuntimeException("this was not expected")
         }
 
         if (SignalManager.getInstance().signalNameExists(signalName)){
@@ -128,7 +125,7 @@ internal val accelerationIntensity = mutableStateOf(0.0f)
 internal val rotationIntensity = mutableStateOf(0.0f)
 internal val expanded = mutableStateOf(false)
 internal val selectedSignalType = mutableStateOf("none")
-internal val signalTypes = listOf("none", KickSignal.type, AmpWave.type, FreqWave.type, WaveModFreq.type)
+internal val signalTypes : List<String> = listOf("none").plus(SignalWithAmplitude.SignalWithAmplitudeTypes.keys)
 
 @Composable
 fun Content(fga: FreezeGameActivity? = null) {
@@ -185,7 +182,7 @@ fun Content(fga: FreezeGameActivity? = null) {
                 val i = Intent(fga, SignalEditActivity::class.java)
                 i.putExtra(util.INTENT_SIGNAL_NAME, fga?.signalName)
                 fga?.startActivity(i)
-            }, enabled = com.example.signalgeneratorapp.Games.Move.selectedSignalType.value != "none"
+            }, enabled = selectedSignalType.value != "none"
             ){
                 Text("Edit selected signal")
             }
