@@ -27,6 +27,19 @@
                 android:exported="false">
         </activity>
         <activity
+                android:name=".SignalList.SignalListActivity"
+                android:exported="false">
+        </activity>
+        <activity
+                android:name=".mainMenu.MainMenu"
+                android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+        <activity
                 android:name=".Games.freeze.FreezeGameActivity"
                 android:exported="false">
         </activity>
@@ -35,12 +48,7 @@
                 android:exported="false"/>
         <activity
                 android:name=".main.MainActivity"
-                android:exported="true">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER"/>
-
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
+                android:exported="false">
         </activity>
         <activity
                 android:name=".SignalEdit.SignalEditActivity"

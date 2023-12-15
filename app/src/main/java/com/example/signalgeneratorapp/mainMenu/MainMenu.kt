@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.signalgeneratorapp.ConnectionManager
 import com.example.signalgeneratorapp.Games.Marble.MarbleGameActivity
 import com.example.signalgeneratorapp.Games.Move.MoveGameActivity
 import com.example.signalgeneratorapp.Games.freeze.FreezeGameActivity
@@ -28,14 +30,25 @@ import com.example.signalgeneratorapp.IconCopy.SaveAs
 import com.example.signalgeneratorapp.IconCopy.Upload
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity
+import com.example.signalgeneratorapp.SensorOutputManager
+import com.example.signalgeneratorapp.SignalList.SignalListActivity
+import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.Storage.StorageActivity2
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
 import kotlin.reflect.KClass
 
 class MainMenu : ComponentActivity () {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        com.example.signalgeneratorapp.StorageManager.createInstance(applicationContext)
+        SensorOutputManager.createInstance(applicationContext)
+
+        SignalManager.getInstance().loadFromPreferences()
+        ConnectionManager.getInstance().loadFromPreferences()
+
         setContent {
             SignalGeneratorAppTheme {
                 Surface (modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -58,6 +71,7 @@ val activities : List<activityItem> = listOf(
     activityItem("New signal", NewSignalActivity::class, Icons.Default.Add),
     activityItem("sensor edit", SensorEditActivity::class, Icons.Filled.Settings),
     activityItem("save/load", StorageActivity2::class, SaveAs),
+    activityItem("signal list", SignalListActivity::class, Icons.Filled.List),
 )
 val fontSize = 20.sp
 @Composable
@@ -79,7 +93,8 @@ fun content(mm : MainMenu?) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.padding(10.dp)
     ){
         items(activities) { name ->
             menuItem(name, mm)
