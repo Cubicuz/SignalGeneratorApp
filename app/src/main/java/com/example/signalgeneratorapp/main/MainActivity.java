@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.signalgeneratorapp.*;
 import com.example.signalgeneratorapp.Games.Marble.MarbleGameActivity;
-import com.example.signalgeneratorapp.Games.Move.MoveGameActivity;
+import com.example.signalgeneratorapp.Games.Wiggle.WiggleGameActivity;
 import com.example.signalgeneratorapp.Games.freeze.FreezeGameActivity;
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity;
 import com.example.signalgeneratorapp.SensorEdit.SensorEditActivity;
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.storage_menu) {
             startActivity(new Intent(MainActivity.this, StorageActivity2.class));
             return true;
-        } else if (item.getItemId() == R.id.move_game_menu) {
-            startActivity(new Intent(MainActivity.this, MoveGameActivity.class));
+        } else if (item.getItemId() == R.id.wiggle_game_menu) {
+            startActivity(new Intent(MainActivity.this, WiggleGameActivity.class));
             return true;
         } else if (item.getItemId() == R.id.freeze_game_menu) {
             startActivity(new Intent(MainActivity.this, FreezeGameActivity.class));

@@ -9,7 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.signalgeneratorapp.ConnectionManager
-import com.example.signalgeneratorapp.Games.Move.MoveGame.SensorEvent
+import com.example.signalgeneratorapp.Games.Wiggle.WiggleGame.SensorEvent
 import com.example.signalgeneratorapp.SensorOutputManager
 import com.example.signalgeneratorapp.SignalEdit.SignalEditActivity
 import com.example.signalgeneratorapp.SignalManager
@@ -143,7 +145,7 @@ fun Content(fga: FreezeGameActivity? = null) {
     val mSwitchY = remember { mutableStateOf(fga?.freezeGame?.dimensionEnabled(1) ?: true) }
     val mSwitchZ = remember { mutableStateOf(fga?.freezeGame?.dimensionEnabled(2) ?: true) }
 
-    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Text("Intensity:", fontSize = fontSize)
         LinearProgressIndicator(
             progress = mIntensity

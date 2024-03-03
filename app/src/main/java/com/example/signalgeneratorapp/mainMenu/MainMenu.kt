@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.signalgeneratorapp.ConnectionManager
 import com.example.signalgeneratorapp.Games.Marble.MarbleGameActivity
-import com.example.signalgeneratorapp.Games.Move.MoveGameActivity
+import com.example.signalgeneratorapp.Games.Wiggle.WiggleGameActivity
 import com.example.signalgeneratorapp.Games.freeze.FreezeGameActivity
 import com.example.signalgeneratorapp.IconCopy.SaveAs
 import com.example.signalgeneratorapp.IconCopy.Upload
@@ -65,9 +65,9 @@ data class activityItem (
 )
 
 val activities : List<activityItem> = listOf(
-    activityItem("marble", MarbleGameActivity::class, Icons.Filled.Place),
+    activityItem("marble", MarbleGameActivity::class, Icons.Filled.Balance),
     activityItem("freeze", FreezeGameActivity::class, Icons.Filled.Lock),
-    activityItem("move", MoveGameActivity::class, Icons.Filled.ArrowForward),
+    activityItem("wiggle", WiggleGameActivity::class, Icons.Filled.DirectionsRun),
     activityItem("New signal", NewSignalActivity::class, Icons.Default.Add),
     activityItem("sensor edit", SensorEditActivity::class, Icons.Filled.Settings),
     activityItem("save/load", StorageActivity2::class, SaveAs),
@@ -78,8 +78,8 @@ val fontSize = 20.sp
 fun menuItem(i: activityItem, mm: MainMenu?) {
 
     Button(onClick = {
-        val i = Intent(mm, i.activity.java)
-        mm?.startActivity(i)
+        val intent = Intent(mm, i.activity.java)
+        mm?.startActivity(intent)
     }, shape = RoundedCornerShape(20)){
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(i.icon, contentDescription = i.name)

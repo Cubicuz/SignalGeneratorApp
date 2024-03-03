@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp.Games.Move
+package com.example.signalgeneratorapp.Games.Wiggle
 
 import android.os.SystemClock
 import com.example.signalgeneratorapp.SignalManager
@@ -10,20 +10,20 @@ import java.lang.Float.min
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
-class MoveGame {
-    private val wiggleThresholdStorageKey = "moveGameWiggleThresholdStorageKey"
+class WiggleGame {
+    private val wiggleThresholdStorageKey = "wiggleGameWiggleThresholdStorageKey"
     var wiggleThreshold : Float = StorageManager.getInstance().loadGlobalFloat(wiggleThresholdStorageKey, 10F)
         set(value) {
             field = value
             StorageManager.getInstance().storeGlobal(wiggleThresholdStorageKey, value)
         }
-    private val strongWiggleThresholdStorageKey = "moveGameStrongWiggleThresholdStorageKey"
+    private val strongWiggleThresholdStorageKey = "wiggleGameStrongWiggleThresholdStorageKey"
     var strongWiggleThreshold : Float = StorageManager.getInstance().loadGlobalFloat(strongWiggleThresholdStorageKey, 50F)
         set(value) {
             field = value
             StorageManager.getInstance().storeGlobal(strongWiggleThresholdStorageKey, value)
         }
-    private val strongWiggleDecrementStorageKey = "moveGameStrongWiggleDecrementStorageKey"
+    private val strongWiggleDecrementStorageKey = "wiggleGameStrongWiggleDecrementStorageKey"
     var strongWiggleDecrement : Float = StorageManager.getInstance().loadGlobalFloat(strongWiggleDecrementStorageKey, 0.01F)
         set(value) {
             field = value
@@ -31,7 +31,7 @@ class MoveGame {
         }
 
     var intensity = 0.0F
-    private val incrementStorageKey = "moveGameIncrementStorageKey"
+    private val incrementStorageKey = "wiggleGameIncrementStorageKey"
     var intensityIncrement : Float = StorageManager.getInstance().loadGlobalFloat(incrementStorageKey, 0.001F)
         set(value) {
             field = value
@@ -46,7 +46,7 @@ class MoveGame {
     private var tickTimeStamp: Long = SystemClock.elapsedRealtimeNanos()
     private val gameTickTimeInNanos: Long = 100_000_000
 
-    private val output: LinearRampSignal = SignalManager.getInstance().addOrGetSignal("moveOutput", ::LinearRampSignal)
+    private val output: LinearRampSignal = SignalManager.getInstance().addOrGetSignal("wiggleGameOutput", ::LinearRampSignal)
     init {
         output.time().set(0.01)
     }

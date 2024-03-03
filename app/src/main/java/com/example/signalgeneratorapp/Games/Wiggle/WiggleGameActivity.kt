@@ -1,4 +1,4 @@
-package com.example.signalgeneratorapp.Games.Move
+package com.example.signalgeneratorapp.Games.Wiggle
 
 import android.content.Intent
 import android.hardware.Sensor
@@ -9,7 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,11 +33,11 @@ import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
 import com.example.signalgeneratorapp.util
 import com.jsyn.Synthesizer
 
-class MoveGameActivity : ComponentActivity() {
-    internal val moveGame = MoveGame()
-    private var sensorCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  moveGame.provideSensorEvent(MoveGame.SensorEvent(values.clone(), nanoTimeStamp))}
+class WiggleGameActivity : ComponentActivity() {
+    internal val wiggleGame = WiggleGame()
+    private var sensorCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->  wiggleGame.provideSensorEvent(WiggleGame.SensorEvent(values.clone(), nanoTimeStamp))}
     private var signal : SignalWithAmplitude? = null
-    val signalName = "movegame-signal"
+    val signalName = "wigglegame-signal"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,9 +50,9 @@ class MoveGameActivity : ComponentActivity() {
             // on below line we are keeping screen as ON.
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        moveGame.updateTickListener = {
-            intensity.value = moveGame.intensity
-            highestWiggle.value = moveGame.highestWiggle
+        wiggleGame.updateTickListener = {
+            intensity.value = wiggleGame.intensity
+            highestWiggle.value = wiggleGame.highestWiggle
         }
         SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_ACCELEROMETER).connect(sensorCallback)
         signal = SignalManager.getInstance().getSignal(signalName) as SignalWithAmplitude?
@@ -60,12 +62,12 @@ class MoveGameActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        moveGame.start()
+        wiggleGame.start()
     }
 
     override fun onStop() {
         super.onStop()
-        moveGame.stop()
+        wiggleGame.stop()
         SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_ACCELEROMETER).disconnect(sensorCallback)
     }
 
@@ -98,7 +100,7 @@ class MoveGameActivity : ComponentActivity() {
             if (old.type.equals(type)){
                 // we already have the correct signal
                 signal = old as SignalWithAmplitude?
-                ConnectionManager.getInstance().connect(signal?.amplitude(), moveGame.getOutputPort())
+                ConnectionManager.getInstance().connect(signal?.amplitude(), wiggleGame.getOutputPort())
                 return
             } else {
                 // delete the unfitting
@@ -107,7 +109,7 @@ class MoveGameActivity : ComponentActivity() {
         }
 
         signal = SignalManager.getInstance().addSignal(signalName, constructor)
-        ConnectionManager.getInstance().connect(signal?.amplitude(), moveGame.getOutputPort())
+        ConnectionManager.getInstance().connect(signal?.amplitude(), wiggleGame.getOutputPort())
         ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 0)
         ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 1)
     }
@@ -120,23 +122,23 @@ internal val selectedSignalType = mutableStateOf("none")
 internal val signalTypes : List<String> = listOf("none").plus(SignalWithAmplitude.SignalWithAmplitudeTypes.keys)
 
 @Composable
-internal fun Content(mva: MoveGameActivity? = null) {
+internal fun Content(mva: WiggleGameActivity? = null) {
     val fontSize = 20.sp
     val mIntensity by intensity
     val mHighestWiggle by highestWiggle
     val mExpanded by expanded
     val mSelectedSignalType by selectedSignalType
 
-    val mWiggleThreshold = remember { mutableStateOf(mva?.moveGame?.wiggleThreshold.toString())}
-    val mStrongWiggleThreshold = remember { mutableStateOf(mva?.moveGame?.strongWiggleThreshold.toString())}
-    val mIncrease = remember { mutableStateOf(mva?.moveGame?.intensityIncrement.toString())}
-    val mStrongWiggleDecrement = remember { mutableStateOf(mva?.moveGame?.strongWiggleDecrement.toString())}
+    val mWiggleThreshold = remember { mutableStateOf(mva?.wiggleGame?.wiggleThreshold.toString())}
+    val mStrongWiggleThreshold = remember { mutableStateOf(mva?.wiggleGame?.strongWiggleThreshold.toString())}
+    val mIncrease = remember { mutableStateOf(mva?.wiggleGame?.intensityIncrement.toString())}
+    val mStrongWiggleDecrement = remember { mutableStateOf(mva?.wiggleGame?.strongWiggleDecrement.toString())}
 
 
-    Column (Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Column (modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Text("Intensity:", fontSize = fontSize)
         Slider(value = mIntensity,
-            onValueChange = { mva!!.moveGame.intensity = it
+            onValueChange = { mva!!.wiggleGame.intensity = it
             intensity.value = it})
         Text("HighestWiggle:", fontSize = fontSize)
         LinearProgressIndicator(
@@ -147,8 +149,8 @@ internal fun Content(mva: MoveGameActivity? = null) {
         TextField(
             value = mWiggleThreshold.value,
             onValueChange = {
-                mva?.moveGame?.wiggleThreshold = it.toFloat()
-                mWiggleThreshold.value = mva?.moveGame?.wiggleThreshold.toString()
+                mva?.wiggleGame?.wiggleThreshold = it.toFloat()
+                mWiggleThreshold.value = mva?.wiggleGame?.wiggleThreshold.toString()
                             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
@@ -156,8 +158,8 @@ internal fun Content(mva: MoveGameActivity? = null) {
         TextField(
             value = mStrongWiggleThreshold.value,
             onValueChange = {
-                mva?.moveGame?.strongWiggleThreshold = it.toFloat()
-                mStrongWiggleThreshold.value = mva?.moveGame?.strongWiggleThreshold.toString()
+                mva?.wiggleGame?.strongWiggleThreshold = it.toFloat()
+                mStrongWiggleThreshold.value = mva?.wiggleGame?.strongWiggleThreshold.toString()
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
@@ -165,8 +167,8 @@ internal fun Content(mva: MoveGameActivity? = null) {
         TextField(
             value = mStrongWiggleDecrement.value,
             onValueChange = {
-                mva?.moveGame?.strongWiggleDecrement = it.toFloat()
-                mStrongWiggleDecrement.value = mva?.moveGame?.strongWiggleDecrement.toString()
+                mva?.wiggleGame?.strongWiggleDecrement = it.toFloat()
+                mStrongWiggleDecrement.value = mva?.wiggleGame?.strongWiggleDecrement.toString()
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
@@ -174,8 +176,8 @@ internal fun Content(mva: MoveGameActivity? = null) {
         TextField(
             value = mIncrease.value,
             onValueChange = {
-                mva?.moveGame?.intensityIncrement = it.toFloat()
-                mIncrease.value = mva?.moveGame?.intensityIncrement.toString()
+                mva?.wiggleGame?.intensityIncrement = it.toFloat()
+                mIncrease.value = mva?.wiggleGame?.intensityIncrement.toString()
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )

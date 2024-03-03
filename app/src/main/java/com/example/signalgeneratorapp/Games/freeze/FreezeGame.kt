@@ -1,6 +1,6 @@
 package com.example.signalgeneratorapp.Games.freeze
 
-import com.example.signalgeneratorapp.Games.Move.MoveGame
+import com.example.signalgeneratorapp.Games.Wiggle.WiggleGame
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.StorageManager
 import com.example.signalgeneratorapp.signals.LinearRampSignal
@@ -10,14 +10,14 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
 class FreezeGame {
-    private val accelerationFactorStorageKey = "moveGameAccelerationFactorStorageKey"
+    private val accelerationFactorStorageKey = "freezeGameAccelerationFactorStorageKey"
     var accelerationFactor : Float = StorageManager.getInstance().loadGlobalFloat(accelerationFactorStorageKey, 1.0f)
         set(value) {
             field = value
             StorageManager.getInstance().storeGlobal(accelerationFactorStorageKey, value)
         }
 
-    private val rotationFactorStorageKey = "moveGameRotationFactorStorageKey"
+    private val rotationFactorStorageKey = "freezeGameRotationFactorStorageKey"
     var rotationFactor : Float = StorageManager.getInstance().loadGlobalFloat(rotationFactorStorageKey, 1.0f)
         set(value) {
             field = value
@@ -38,7 +38,7 @@ class FreezeGame {
     private val setRefRot = AtomicBoolean(false)
 
 
-    private val enabledDimensionsStorageKey = "moveGameEnabledDimensionsStorageKey"
+    private val enabledDimensionsStorageKey = "freezeGameEnabledDimensionsStorageKey"
     private val enabledDimensions = Array(3) { AtomicBoolean() }
     fun enableDimension(dimension : Int, enable : Boolean){
         enabledDimensions[dimension].set(enable)
@@ -54,10 +54,10 @@ class FreezeGame {
     }
     fun reset(){ setRefAcc.set(true); setRefRot.set(true)}
 
-    private val accelerationSensorEvents = ArrayBlockingQueue<MoveGame.SensorEvent>(100)
-    private val rotationSensorEvents = ArrayBlockingQueue<MoveGame.SensorEvent>(100)
-    private var referenceAccelerationSensorEvent = MoveGame.SensorEvent(FloatArray(3), 0L)
-    private var referenceRotationSensorEvent = MoveGame.SensorEvent(FloatArray(3), 0L)
+    private val accelerationSensorEvents = ArrayBlockingQueue<WiggleGame.SensorEvent>(100)
+    private val rotationSensorEvents = ArrayBlockingQueue<WiggleGame.SensorEvent>(100)
+    private var referenceAccelerationSensorEvent = WiggleGame.SensorEvent(FloatArray(3), 0L)
+    private var referenceRotationSensorEvent = WiggleGame.SensorEvent(FloatArray(3), 0L)
 
     private val output: LinearRampSignal = SignalManager.getInstance().addOrGetSignal("freezeOutput", ::LinearRampSignal)
     init {
@@ -66,14 +66,14 @@ class FreezeGame {
     fun getOutputPort(): UnitOutputPort {
         return output.firstOutputPort()
     }
-    fun provideAccelerationSensorEvent(se : MoveGame.SensorEvent) {
+    fun provideAccelerationSensorEvent(se : WiggleGame.SensorEvent) {
         if (referenceAccelerationSensorEvent.nanoTimeStamp != 0L){
             accelerationSensorEvents.offer(se)
         } else {
             referenceAccelerationSensorEvent = se
         }
     }
-     fun provideRotationSensorEvent(se : MoveGame.SensorEvent) {
+     fun provideRotationSensorEvent(se : WiggleGame.SensorEvent) {
         if (referenceRotationSensorEvent.nanoTimeStamp != 0L){
             rotationSensorEvents.offer(se)
         } else {
@@ -81,7 +81,7 @@ class FreezeGame {
         }
     }
     private fun updateAcceleration() {
-        val se: MoveGame.SensorEvent = accelerationSensorEvents.take()
+        val se: WiggleGame.SensorEvent = accelerationSensorEvents.take()
         if (setRefAcc.get()){
             referenceAccelerationSensorEvent = se
             setRefAcc.set(false)
@@ -91,7 +91,7 @@ class FreezeGame {
         updateTick()
     }
     private fun updateRotation() {
-        val se: MoveGame.SensorEvent = rotationSensorEvents.take()
+        val se: WiggleGame.SensorEvent = rotationSensorEvents.take()
         if (setRefRot.get()){
             referenceRotationSensorEvent = se
             setRefRot.set(false)
@@ -106,7 +106,7 @@ class FreezeGame {
         output.input().set(intensity.toDouble())
         updateTickListener?.invoke()
     }
-    private fun calcMovementDiff(s1: MoveGame.SensorEvent, s2: MoveGame.SensorEvent): Float {
+    private fun calcMovementDiff(s1: WiggleGame.SensorEvent, s2: WiggleGame.SensorEvent): Float {
         var vecX = 0f
         var vecY = 0f
         var vecZ = 0f
