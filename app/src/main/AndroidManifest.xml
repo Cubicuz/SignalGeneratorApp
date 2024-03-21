@@ -27,6 +27,10 @@
                 android:exported="false">
         </activity>
         <activity
+                android:name=".Games.party.PartyGameActivity"
+                android:exported="false">
+        </activity>
+        <activity
                 android:name=".SignalList.SignalListActivity"
                 android:exported="false">
         </activity>
