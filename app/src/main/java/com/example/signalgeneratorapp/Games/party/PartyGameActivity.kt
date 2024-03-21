@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitDragOrCancellation
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -13,8 +15,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -36,40 +40,63 @@ data class State(
 
 @Composable
 fun GameField(state: MutableState<State>) {
-    // field
-    Box(modifier = Modifier
-        .size(1000.dp, 1000.dp)
-        .background(Color.Black))
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
     var ballColor by remember {
         mutableStateOf(Color.Yellow)
     }
+    val ballsize = 20
+    val ballsizehalf = ballsize / 2
+    // field
+    Box(modifier = Modifier
+        .size(1000.dp, 1000.dp)
+        .background(Color.Black)
+        .pointerInput(Unit) {
+            awaitEachGesture {
+                val down = awaitFirstDown().also {
+                    it.consume()
+                    offsetX = it.position.x - ballsizehalf.dp.toPx()
+                    offsetY = it.position.y - ballsizehalf.dp.toPx()
+                    ballColor = Color.Yellow
+                }
+
+                var change = awaitTouchSlopOrCancellation(down.id) { change, over ->
+                    val original = Offset(offsetX, offsetY)
+                    val summed = original + over
+                    val newValue = Offset(
+                        x = summed.x.coerceIn(0f, size.width - ballsize.dp.toPx()),
+                        y = summed.y.coerceIn(0f, size.height - ballsize.dp.toPx())
+                    )
+                    offsetX = newValue.x
+                    offsetY = newValue.y
+                    change.consume()
+                    ballColor = Color.Red
+                }
+                while (change != null && change.pressed) {
+                    change = awaitDragOrCancellation(change.id)
+                    if (change != null && change.pressed) {
+                        val original = Offset(offsetX, offsetY)
+                        val summed = original + change.positionChange()
+                        val newValue = Offset(
+                            x = summed.x.coerceIn(0f, size.width - ballsize.dp.toPx()),
+                            y = summed.y.coerceIn(0f, size.height - ballsize.dp.toPx())
+                        )
+                        offsetX = newValue.x
+                        offsetY = newValue.y
+                        change.consume()
+                        ballColor = Color.Green
+                    }
+                }
+            }
+        }
+    )
     // ball
     Box(modifier = Modifier
         .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-        .size(20.dp, 20.dp)
+        .size(ballsize.dp, ballsize.dp)
         .clip(CircleShape)
         .background(ballColor)
-        .pointerInput(Unit) {
-            detectTapGestures(
-                onPress = {
-                    ballColor = Color.Red
-                },
-                onTap = {
-                    ballColor = Color.Blue
-                }
-            )
-            detectDragGestures(
-                onDrag = { change, dragAmount ->
-                    change.consume()
-                    offsetX += dragAmount.x
-                    offsetY += dragAmount.y
-                },
-                onDragEnd = { ballColor = Color.Yellow },
-                onDragCancel = {ballColor = Color.Green}
-            )
-        })
+        )
 }
 
 @Preview(showBackground = true)
