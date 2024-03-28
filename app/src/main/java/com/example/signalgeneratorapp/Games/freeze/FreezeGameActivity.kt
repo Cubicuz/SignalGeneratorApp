@@ -177,7 +177,7 @@ fun Content(fga: FreezeGameActivity? = null) {
             Button(onClick = {
                 fga?.freezeGame?.reset()
             }){
-                Text("Reset position")
+                Text("Zero position")
             }
 
             Button(onClick = {
