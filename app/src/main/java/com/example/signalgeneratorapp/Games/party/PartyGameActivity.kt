@@ -27,29 +27,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
 class PartyGameActivity : ComponentActivity () {
-    val mutableState = mutableStateOf(State(ballPosition = Pair(50f, 50f)))
+    internal val partyGame = PartyGame()
+    internal val isTouchActive = AtomicBoolean(false)
+    private var sensorRotCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->
+        if (isTouchActive.get()){
+            partyGame.update(values[0].toDouble(), values[1].toDouble())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SignalGeneratorAppTheme {
-                GameField(state = mutableState)
+                GameField(this)
             }
         }
     }
 }
-data class State(
-    var ballPosition: Pair<Float, Float>
-)
 internal val fontSize = 20.sp
 internal val colorRight = Color.Yellow
 internal val colorDown = Color.Blue
@@ -61,10 +66,17 @@ internal val expanded = Array(4) {mutableStateOf(false)}
 internal val selectedSignalType = Array(4) {mutableStateOf("none")}
 internal val signalTypes : List<String> = listOf("none").plus(SignalWithAmplitude.SignalWithAmplitudeTypes.keys)
 
+internal var movableSpaceX = 0
+internal var movableSpaceY = 0
+internal fun calcNormedPosition(max: Int, value: Int): Double {
+    return ((value*2 - max).toDouble()/max).coerceIn(-1.0, 1.0)
+}
+
 @Composable
 fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : MutableState<String>, index : Int) {
-    val mSelectedSignalTypeHor by selectedSignalType
+    val mSelectedSignalType by selectedSignalType
     val mExpandedHor by expanded
+
     Column (
         Modifier
             .fillMaxWidth()
@@ -73,7 +85,7 @@ fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : Mutab
             Text("Horizontal signal: ", fontSize = fontSize)
             Box(Modifier.wrapContentSize(Alignment.TopStart)){
                 Text(
-                    mSelectedSignalTypeHor,
+                    mSelectedSignalType,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = { expanded.value = true })
@@ -102,10 +114,9 @@ fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : Mutab
         }
     }
 }
-
+private var initialize = true
 @Composable
-fun GameField(state: MutableState<State>) {
-
+fun GameField(pga: PartyGameActivity? = null) {
 
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
@@ -114,6 +125,7 @@ fun GameField(state: MutableState<State>) {
     }
     val ballsize = 20
     val ballsizehalf = ballsize / 2
+
     Column(modifier = Modifier
         .fillMaxSize()
         .verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -132,13 +144,22 @@ fun GameField(state: MutableState<State>) {
                     )
                 )
             )
+            .onGloballyPositioned {
+                movableSpaceX = it.size.width - ballsize + 1
+                movableSpaceY = it.size.height - ballsize + 1
+            }
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown().also {
+
                         // start touch
+                        pga?.isTouchActive?.set(true)
                         it.consume()
                         offsetX = it.position.x - ballsizehalf.dp.toPx()
                         offsetY = it.position.y - ballsizehalf.dp.toPx()
+                        pga?.partyGame?.update(
+                            calcNormedPosition(movableSpaceX, offsetX.roundToInt()),
+                            calcNormedPosition(movableSpaceY, offsetY.roundToInt()))
                         ballColor = Color.Yellow
                     }
 
@@ -152,12 +173,16 @@ fun GameField(state: MutableState<State>) {
                         )
                         offsetX = newValue.x
                         offsetY = newValue.y
+                        pga?.partyGame?.update(
+                            calcNormedPosition(movableSpaceX, offsetX.roundToInt()),
+                            calcNormedPosition(movableSpaceY, offsetY.roundToInt()))
                         change.consume()
                         ballColor = Color.Red
                     }
                     if (change == null) {
                         // abort touch
                         ballColor = Color.Magenta
+                        pga?.isTouchActive?.set(false)
                     }
                     while (change != null && change.pressed) {
                         change = awaitDragOrCancellation(change.id)
@@ -171,12 +196,16 @@ fun GameField(state: MutableState<State>) {
                             )
                             offsetX = newValue.x
                             offsetY = newValue.y
+                            pga?.partyGame?.update(
+                                calcNormedPosition(movableSpaceX, offsetX.roundToInt()),
+                                calcNormedPosition(movableSpaceY, offsetY.roundToInt()))
                             change.consume()
                             ballColor = Color.Green
                         } else if (change != null && change.changedToUp()) {
                             // abort drag
                             change.consume()
                             ballColor = Color.Blue
+                            pga?.isTouchActive?.set(false)
                         }
                     }
                 }
@@ -210,7 +239,6 @@ fun GameField(state: MutableState<State>) {
 @Composable
 fun DefaultPreview() {
     SignalGeneratorAppTheme {
-        val mutableState = remember { mutableStateOf(State(ballPosition = Pair(50f, 50f))) }
-        GameField(mutableState)
+        GameField()
     }
 }
