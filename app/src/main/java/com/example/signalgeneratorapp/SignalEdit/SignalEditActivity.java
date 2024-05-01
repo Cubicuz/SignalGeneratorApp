@@ -226,7 +226,6 @@ public class SignalEditActivity extends Activity {
         }
     };
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -234,11 +233,15 @@ public class SignalEditActivity extends Activity {
         if (sensorEventListener != null){
             sensorManager.registerListener(sensorEventListener, selectedSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
+
+        SignalManager.getInstance().startAudio();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        SignalManager.getInstance().stopAudio();
+
         if (sensorEventListener != null){
             sensorManager.unregisterListener(sensorEventListener);
         }

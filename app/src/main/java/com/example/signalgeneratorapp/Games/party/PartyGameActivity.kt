@@ -1,5 +1,6 @@
 package com.example.signalgeneratorapp.Games.party
 
+import android.hardware.Sensor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,33 +33,80 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.signalgeneratorapp.SensorOutputManager
+import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
+import com.jsyn.Synthesizer
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
 class PartyGameActivity : ComponentActivity () {
     internal val partyGame = PartyGame()
     internal val isTouchActive = AtomicBoolean(false)
+    internal val signalBaseName = "PartyGameSignal"
+    internal val signalNames = Array(4) { i -> signalBaseName + partyGame.directionNames[i]}
+
     private var sensorRotCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->
-        if (isTouchActive.get()){
-            partyGame.update(values[0].toDouble(), values[1].toDouble())
+        if (!isTouchActive.get()){
+            val xy = partyGame.provideRotationSensorEvent(values)
+            offsetX.floatValue = calcOffset(movableSpaceX - ballsize, xy.first)
+            offsetY.floatValue = calcOffset(movableSpaceY - ballsize, xy.second)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        for (i in signalNames.indices){
+            val signal = SignalManager.getInstance().getSignal(signalNames[i]) as SignalWithAmplitude?
+            selectedSignalType[i].value = signal?.type ?: "none"
+        }
+
         setContent {
             SignalGeneratorAppTheme {
                 GameField(this)
             }
         }
+
+        partyGame.maximumSensorRange = SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).maximumRange.toDouble()
+        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).connect(sensorRotCallback)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).disconnect(sensorRotCallback)
+    }
+    override fun onResume() {
+        super.onResume()
+        SensorOutputManager.getInstance().start()
+        SignalManager.getInstance().startAudio()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        SignalManager.getInstance().stopAudio()
+        SensorOutputManager.getInstance().stop()
+    }
+    fun setSignal(type: String, index: Int){
+        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ? = null
+
+        if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
+            constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]
+            // TODO create signal and assign
+        } else if (type.equals("none")){
+            SignalManager.getInstance().removeSignal(signalNames[index])
+            return
+        } else {
+            throw RuntimeException("A signal type $type was selected that does not exist in AmplitudeTypes")
+        }
+
     }
 }
 internal val fontSize = 20.sp
 internal val colorRight = Color.Yellow
-internal val colorDown = Color.Blue
-internal val colorLeft = Color.Red
+internal val colorDown = Color(100, 100, 255) // light blue
+internal val colorLeft = Color(255, 80, 80) // light red
 internal val colorUp = Color.Green
 internal val colors = arrayOf(colorUp, colorDown, colorLeft, colorRight)
 
@@ -66,14 +114,22 @@ internal val expanded = Array(4) {mutableStateOf(false)}
 internal val selectedSignalType = Array(4) {mutableStateOf("none")}
 internal val signalTypes : List<String> = listOf("none").plus(SignalWithAmplitude.SignalWithAmplitudeTypes.keys)
 
+internal val offsetX = mutableFloatStateOf(0f)
+internal val offsetY = mutableFloatStateOf(0f)
 internal var movableSpaceX = 0
 internal var movableSpaceY = 0
+internal val ballsize = 20
+internal val ballsizehalf = ballsize / 2
+
 internal fun calcNormedPosition(max: Int, value: Int): Double {
     return ((value*2 - max).toDouble()/max).coerceIn(-1.0, 1.0)
 }
+internal fun calcOffset(max: Int, value: Double) : Float {
+    return ((value + 1) * max / 2).toFloat().coerceIn(0f, max.toFloat())
+}
 
 @Composable
-fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : MutableState<String>, index : Int) {
+fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : MutableState<String>, index : Int, pga: PartyGameActivity?) {
     val mSelectedSignalType by selectedSignalType
     val mExpandedHor by expanded
 
@@ -97,20 +153,23 @@ fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : Mutab
                     for (signalItem in signalTypes) {
                         DropdownMenuItem(onClick = {
                             selectedSignalType.value = signalItem
-    //                            fga?.setSignal(signalItem)
+                                pga?.setSignal(signalItem, index)
                         },
                             text = { Text(signalItem) })
                     }
                 }
             }
         }
-        Button(onClick = {
-    //                val i = Intent(fga, SignalEditActivity::class.java)
-    //                i.putExtra(util.INTENT_SIGNAL_NAME, fga?.signalName)
-    //                fga?.startActivity(i)
-        }, enabled = selectedSignalType.value != "none"
-        ){
-            Text("Edit horizontal signal")
+        Row{
+            Button(onClick = {
+        //                val i = Intent(fga, SignalEditActivity::class.java)
+        //                i.putExtra(util.INTENT_SIGNAL_NAME, fga?.signalName)
+        //                fga?.startActivity(i)
+            }, enabled = selectedSignalType.value != "none"
+            ){ Text("Edit horizontal signal")}
+            Button(onClick = {
+                pga?.partyGame?.setSensorBoundaries(index)
+            }){ Text("set boundary")}
         }
     }
 }
@@ -118,13 +177,11 @@ private var initialize = true
 @Composable
 fun GameField(pga: PartyGameActivity? = null) {
 
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    var offsetX by offsetX
+    var offsetY by offsetY
     var ballColor by remember {
         mutableStateOf(Color.Yellow)
     }
-    val ballsize = 20
-    val ballsizehalf = ballsize / 2
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -223,14 +280,14 @@ fun GameField(pga: PartyGameActivity? = null) {
         Row (horizontalArrangement = Arrangement.spacedBy(5.dp))
         {
             Button(onClick = {
-
+                pga?.partyGame?.resetReferencePoint()
             }){
                 Text("Zero position")
             }
 
         }
         for (i in expanded.indices){
-            SignalSelection(expanded[i], selectedSignalType[i], i)
+            SignalSelection(expanded[i], selectedSignalType[i], i, pga)
         }
     }
 }

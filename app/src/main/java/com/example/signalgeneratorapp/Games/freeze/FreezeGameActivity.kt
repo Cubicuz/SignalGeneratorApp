@@ -99,7 +99,7 @@ class FreezeGameActivity : ComponentActivity () {
             SignalManager.getInstance().removeSignal(signalName)
             return
         } else {
-            throw RuntimeException("this was not expected")
+            throw RuntimeException("A signal type $type was selected that does not exist in AmplitudeTypes")
         }
 
         if (SignalManager.getInstance().signalNameExists(signalName)){

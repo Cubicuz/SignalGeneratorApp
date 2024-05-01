@@ -58,6 +58,7 @@ public class SensorOutput{
             }
         }
     }
+    public float getMaximumRange() { return sensor.getMaximumRange(); }
     public interface SensorEventHandler{
         void onSensorChanged(final float[] values, long nanoTimeStamp);
     }
