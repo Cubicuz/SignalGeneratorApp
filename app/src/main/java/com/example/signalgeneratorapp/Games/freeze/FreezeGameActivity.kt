@@ -91,7 +91,7 @@ class FreezeGameActivity : ComponentActivity () {
     }
 
     internal fun setSignal(type : String){
-        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ?
+        val constructor : ((String, Synthesizer) -> SignalWithAmplitude) ?
 
         if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
             constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]

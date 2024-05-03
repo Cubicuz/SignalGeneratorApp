@@ -2,6 +2,7 @@ package com.example.signalgeneratorapp.Games.party
 
 import android.hardware.Sensor
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -64,6 +65,8 @@ class PartyGameActivity : ComponentActivity () {
             SignalGeneratorAppTheme {
                 GameField(this)
             }
+            // on below line we are keeping screen as ON.
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
         partyGame.maximumSensorRange = SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).maximumRange.toDouble()
         SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).connect(sensorRotCallback)

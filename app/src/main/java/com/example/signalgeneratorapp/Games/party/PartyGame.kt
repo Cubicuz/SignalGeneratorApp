@@ -156,7 +156,7 @@ class PartyGame {
         if (direction > 4) {
             throw Exception("index too high $direction")
         }
-        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ?
+        val constructor : ((String, Synthesizer) -> SignalWithAmplitude) ?
 
         if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
             constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]
