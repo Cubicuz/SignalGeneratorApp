@@ -6,6 +6,7 @@ import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.StorageManager
 import com.example.signalgeneratorapp.signals.LinearRampSignal
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
+import com.jsyn.Synthesizer
 import java.util.concurrent.atomic.AtomicBoolean
 
 class PartyGame {
@@ -23,10 +24,9 @@ class PartyGame {
     private var resetSensorBoundariesDirection = 0
 
     fun provideRotationSensorEvent(fa : FloatArray) : Pair<Double, Double> {
-        var xy1 = alignSensorValuesToReference(fa[0].toDouble(), fa[1].toDouble())
-        var xy2 = normAlignedSensorValuesToSelfmadeBoundaries(xy1)
-        var xy3 = update(xy2.first, xy2.second)
-        Log.i("xvalue: ", " " + fa[0].toString() + " : " + xy1.first.toString() + " : " + xy2.first.toString() + " : " + xy3.first.toString())
+        val xy1 = alignSensorValuesToReference(fa[0].toDouble(), -fa[1].toDouble())
+        val xy2 = normAlignedSensorValuesToSelfmadeBoundaries(xy1)
+        val xy3 = update(xy2.first, xy2.second)
         return xy3
     }
 
@@ -144,15 +144,48 @@ class PartyGame {
         resetReferenceOnNextSensorData.set(true)
     }
 
-    fun setOutputSignal(signal: SignalWithAmplitude, index: Int){
-        if (index > 4) {
-            throw Exception("index too high $index")
-        }
-        ConnectionManager.getInstance().connect(signal.amplitude(), outputSignals[index].firstOutputPort())
-    }
-
-    private val basename = "partyGameOutput"
+    private val basename = "partyGame"
     private val signalNames = Array(4) { i -> basename + directionNames[i]}
-    private val outputSignals : Array<LinearRampSignal> = Array(4) { i -> SignalManager.getInstance().addOrGetSignal(signalNames[i], ::LinearRampSignal) }
+    private val outputSignalNames = Array(4) { i -> basename + "Output" + directionNames[i]}
+    private val outputSignals : Array<LinearRampSignal> = Array(4) { i -> SignalManager.getInstance().addOrGetSignal(outputSignalNames[i], ::LinearRampSignal) }
+    private val signals : Array<SignalWithAmplitude?> = Array(4) { i -> SignalManager.getInstance().getSignal(signalNames[i]) as SignalWithAmplitude? }
+    fun getSignal(direction: Int) : SignalWithAmplitude? {
+        return signals[direction]
+    }
+    fun setSignal(type : String, direction : Int){
+        if (direction > 4) {
+            throw Exception("index too high $direction")
+        }
+        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ?
+
+        if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
+            constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]
+        } else if (type.equals("none")){
+            SignalManager.getInstance().removeSignal(signalNames[direction])
+            signals[direction] = null
+            return
+        } else {
+            throw RuntimeException("A signal type $type was selected that does not exist in AmplitudeTypes")
+        }
+
+        if (SignalManager.getInstance().signalNameExists(signalNames[direction])){
+            val old = SignalManager.getInstance().getSignal(signalNames[direction])
+            if (old.type.equals(type)){
+                // we already have the correct signal
+                signals[direction] = old as SignalWithAmplitude?
+                ConnectionManager.getInstance().connect(signals[direction]?.amplitude(), outputSignals[direction].firstOutputPort())
+                return
+            } else {
+                // delete the unfitting
+
+                SignalManager.getInstance().removeSignal(signalNames[direction])
+            }
+        }
+
+        signals[direction] = SignalManager.getInstance().addSignal(signalNames[direction], constructor)
+        ConnectionManager.getInstance().connect(signals[direction]?.amplitude(), outputSignals[direction].firstOutputPort())
+        ConnectionManager.getInstance().connectLineout(signals[direction]?.firstOutputPort(), 0)
+        ConnectionManager.getInstance().connectLineout(signals[direction]?.firstOutputPort(), 1)
+    }
 }
 

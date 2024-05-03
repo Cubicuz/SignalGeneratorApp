@@ -91,12 +91,13 @@ class FreezeGameActivity : ComponentActivity () {
     }
 
     internal fun setSignal(type : String){
-        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ? = null
+        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ?
 
         if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
             constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]
         } else if (type.equals("none")){
             SignalManager.getInstance().removeSignal(signalName)
+            signal = null
             return
         } else {
             throw RuntimeException("A signal type $type was selected that does not exist in AmplitudeTypes")

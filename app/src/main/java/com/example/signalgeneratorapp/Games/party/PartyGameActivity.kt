@@ -37,15 +37,12 @@ import com.example.signalgeneratorapp.SensorOutputManager
 import com.example.signalgeneratorapp.SignalManager
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
-import com.jsyn.Synthesizer
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
 class PartyGameActivity : ComponentActivity () {
     internal val partyGame = PartyGame()
     internal val isTouchActive = AtomicBoolean(false)
-    internal val signalBaseName = "PartyGameSignal"
-    internal val signalNames = Array(4) { i -> signalBaseName + partyGame.directionNames[i]}
 
     private var sensorRotCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->
         if (!isTouchActive.get()){
@@ -58,8 +55,8 @@ class PartyGameActivity : ComponentActivity () {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        for (i in signalNames.indices){
-            val signal = SignalManager.getInstance().getSignal(signalNames[i]) as SignalWithAmplitude?
+        for (i in partyGame.directionNames.indices){
+            val signal = partyGame.getSignal(i)
             selectedSignalType[i].value = signal?.type ?: "none"
         }
 
@@ -68,7 +65,6 @@ class PartyGameActivity : ComponentActivity () {
                 GameField(this)
             }
         }
-
         partyGame.maximumSensorRange = SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).maximumRange.toDouble()
         SensorOutputManager.getInstance().getSensorOutput(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR).connect(sensorRotCallback)
     }
@@ -87,20 +83,6 @@ class PartyGameActivity : ComponentActivity () {
         super.onPause()
         SignalManager.getInstance().stopAudio()
         SensorOutputManager.getInstance().stop()
-    }
-    fun setSignal(type: String, index: Int){
-        var constructor : ((String, Synthesizer) -> SignalWithAmplitude) ? = null
-
-        if (SignalWithAmplitude.SignalWithAmplitudeTypes.containsKey(type)){
-            constructor = SignalWithAmplitude.SignalWithAmplitudeTypes[type]
-            // TODO create signal and assign
-        } else if (type.equals("none")){
-            SignalManager.getInstance().removeSignal(signalNames[index])
-            return
-        } else {
-            throw RuntimeException("A signal type $type was selected that does not exist in AmplitudeTypes")
-        }
-
     }
 }
 internal val fontSize = 20.sp
@@ -153,7 +135,7 @@ fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : Mutab
                     for (signalItem in signalTypes) {
                         DropdownMenuItem(onClick = {
                             selectedSignalType.value = signalItem
-                                pga?.setSignal(signalItem, index)
+                                pga?.partyGame?.setSignal(signalItem, index)
                         },
                             text = { Text(signalItem) })
                     }
@@ -173,7 +155,7 @@ fun SignalSelection(expanded : MutableState<Boolean>, selectedSignalType : Mutab
         }
     }
 }
-private var initialize = true
+
 @Composable
 fun GameField(pga: PartyGameActivity? = null) {
 
