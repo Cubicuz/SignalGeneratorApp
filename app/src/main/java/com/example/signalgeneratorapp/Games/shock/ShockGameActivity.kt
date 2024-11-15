@@ -29,6 +29,7 @@ import com.example.signalgeneratorapp.signals.LinearRampSignal
 import com.example.signalgeneratorapp.signals.SignalWithAmplitude
 import com.example.signalgeneratorapp.signals.SineSignal
 import com.example.signalgeneratorapp.ui.theme.SignalGeneratorAppTheme
+import kotlin.math.sqrt
 
 class ShockGameActivity : ComponentActivity() {
     private var signal : SineSignal? = null
@@ -39,18 +40,17 @@ class ShockGameActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        signal = SignalManager.getInstance().getSignal(signalName) as SineSignal?
+        signal = SignalManager.getInstance().addOrGetSignal(signalName, ::SineSignal)
         internalOnOffSignal = SignalManager.getInstance().addOrGetSignal(internalOnOffSignalName, ::LinearRampSignal)
         selectedSignalType.value = signal?.type ?: "none"
         internalOnOffSignal?.time()?.set(0.01)
 
-        if (signal == null) {
-            signal = SignalManager.getInstance().addSignal(signalName, ::SineSignal)
-            ConnectionManager.getInstance().connect(signal?.amplitude(), internalOnOffSignal?.firstOutputPort())
-            ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 0)
-            ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 1)
-        }
-        frequency.value = (signal?.frequency()?.value?.toFloat()!!)
+
+        ConnectionManager.getInstance().connect(signal?.amplitude(), internalOnOffSignal?.firstOutputPort())
+        ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 0)
+        ConnectionManager.getInstance().connectLineout(signal?.firstOutputPort(), 1)
+
+        frequency.value = sqrt((signal?.frequency()?.value?.toFloat()!!))
 
         setContent {
             SignalGeneratorAppTheme {
@@ -65,7 +65,6 @@ class ShockGameActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         SignalManager.getInstance().startAudio()
-        frequency.value = (signal?.frequency()?.value?.toFloat()!!)
 
     }
 
@@ -89,7 +88,7 @@ fun content(signal: LinearRampSignal?, sineSignal: SineSignal?) {
     ) {
         var mFrequency by frequency
         Text(text = "Frequency: " + (mFrequency*mFrequency).toString())
-        Slider(mFrequency,
+        Slider(value = mFrequency,
             onValueChange = {
                 mFrequency = it
                 sineSignal?.frequency()?.set((it * it).toDouble())},
