@@ -27,6 +27,7 @@ import com.example.signalgeneratorapp.Games.Marble.MarbleGameActivity
 import com.example.signalgeneratorapp.Games.Wiggle.WiggleGameActivity
 import com.example.signalgeneratorapp.Games.freeze.FreezeGameActivity
 import com.example.signalgeneratorapp.Games.party.PartyGameActivity
+import com.example.signalgeneratorapp.Games.shock.ShockGameActivity
 import com.example.signalgeneratorapp.IconCopy.SaveAs
 import com.example.signalgeneratorapp.IconCopy.Upload
 import com.example.signalgeneratorapp.NewSignal.NewSignalActivity
@@ -74,6 +75,7 @@ val activities : List<activityItem> = listOf(
     activityItem("save/load", StorageActivity2::class, SaveAs),
     activityItem("signal list", SignalListActivity::class, Icons.Filled.List),
     activityItem("party", PartyGameActivity::class, Icons.Filled.PartyMode),
+    activityItem("shock", ShockGameActivity::class, Icons.Filled.ElectricBolt),
 )
 val fontSize = 20.sp
 @Composable

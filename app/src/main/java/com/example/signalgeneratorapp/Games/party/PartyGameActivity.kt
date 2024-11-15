@@ -48,8 +48,8 @@ class PartyGameActivity : ComponentActivity () {
     private var sensorRotCallback: ((FloatArray, Long)->Unit) = { values, nanoTimeStamp ->
         if (!isTouchActive.get()){
             val xy = partyGame.provideRotationSensorEvent(values)
-            offsetX.floatValue = calcOffset(movableSpaceX - ballsize, xy.first)
-            offsetY.floatValue = calcOffset(movableSpaceY - ballsize, xy.second)
+            offsetX.floatValue = calcOffset(movableSpaceX - ballSize, xy.first)
+            offsetY.floatValue = calcOffset(movableSpaceY - ballSize, xy.second)
         }
     }
 
@@ -103,8 +103,8 @@ internal val offsetX = mutableFloatStateOf(0f)
 internal val offsetY = mutableFloatStateOf(0f)
 internal var movableSpaceX = 0
 internal var movableSpaceY = 0
-internal val ballsize = 20
-internal val ballsizehalf = ballsize / 2
+internal const val ballSize = 20
+internal const val ballSizeHalf = ballSize / 2
 
 internal fun calcNormedPosition(max: Int, value: Int): Double {
     return ((value*2 - max).toDouble()/max).coerceIn(-1.0, 1.0)
@@ -165,7 +165,7 @@ fun GameField(pga: PartyGameActivity? = null) {
     var offsetX by offsetX
     var offsetY by offsetY
     var ballColor by remember {
-        mutableStateOf(Color.Yellow)
+        mutableStateOf(Color.Black)
     }
 
     Column(modifier = Modifier
@@ -174,7 +174,7 @@ fun GameField(pga: PartyGameActivity? = null) {
         // field
         Box(modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(250.dp)
             .background(
                 brush = Brush.sweepGradient(
                     colors = listOf(
@@ -187,8 +187,8 @@ fun GameField(pga: PartyGameActivity? = null) {
                 )
             )
             .onGloballyPositioned {
-                movableSpaceX = it.size.width - ballsize + 1
-                movableSpaceY = it.size.height - ballsize + 1
+                movableSpaceX = it.size.width - ballSize + 1
+                movableSpaceY = it.size.height - ballSize + 1
             }
             .pointerInput(Unit) {
                 awaitEachGesture {
@@ -197,21 +197,21 @@ fun GameField(pga: PartyGameActivity? = null) {
                         // start touch
                         pga?.isTouchActive?.set(true)
                         it.consume()
-                        offsetX = it.position.x - ballsizehalf.dp.toPx()
-                        offsetY = it.position.y - ballsizehalf.dp.toPx()
+                        offsetX = it.position.x - ballSizeHalf.dp.toPx()
+                        offsetY = it.position.y - ballSizeHalf.dp.toPx()
                         pga?.partyGame?.update(
                             calcNormedPosition(movableSpaceX, offsetX.roundToInt()),
                             calcNormedPosition(movableSpaceY, offsetY.roundToInt()))
-                        ballColor = Color.Yellow
+                        //ballColor = Color.Yellow
                     }
 
                     var change = awaitTouchSlopOrCancellation(down.id) { change, over ->
-                        // draged further than initial threshold
+                        // dragged further than initial threshold
                         val original = Offset(offsetX, offsetY)
                         val summed = original + over
                         val newValue = Offset(
-                            x = summed.x.coerceIn(0f, size.width - ballsize.dp.toPx()),
-                            y = summed.y.coerceIn(0f, size.height - ballsize.dp.toPx())
+                            x = summed.x.coerceIn(0f, size.width - ballSize.dp.toPx()),
+                            y = summed.y.coerceIn(0f, size.height - ballSize.dp.toPx())
                         )
                         offsetX = newValue.x
                         offsetY = newValue.y
@@ -219,11 +219,11 @@ fun GameField(pga: PartyGameActivity? = null) {
                             calcNormedPosition(movableSpaceX, offsetX.roundToInt()),
                             calcNormedPosition(movableSpaceY, offsetY.roundToInt()))
                         change.consume()
-                        ballColor = Color.Red
+                        //ballColor = Color.Red
                     }
                     if (change == null) {
                         // abort touch
-                        ballColor = Color.Magenta
+                        //ballColor = Color.Magenta
                         pga?.isTouchActive?.set(false)
                     }
                     while (change != null && change.pressed) {
@@ -233,8 +233,8 @@ fun GameField(pga: PartyGameActivity? = null) {
                             val original = Offset(offsetX, offsetY)
                             val summed = original + change.positionChange()
                             val newValue = Offset(
-                                x = summed.x.coerceIn(0f, size.width - ballsize.dp.toPx()),
-                                y = summed.y.coerceIn(0f, size.height - ballsize.dp.toPx())
+                                x = summed.x.coerceIn(0f, size.width - ballSize.dp.toPx()),
+                                y = summed.y.coerceIn(0f, size.height - ballSize.dp.toPx())
                             )
                             offsetX = newValue.x
                             offsetY = newValue.y
@@ -242,11 +242,11 @@ fun GameField(pga: PartyGameActivity? = null) {
                                 calcNormedPosition(movableSpaceX, offsetX.roundToInt()),
                                 calcNormedPosition(movableSpaceY, offsetY.roundToInt()))
                             change.consume()
-                            ballColor = Color.Green
+                            //ballColor = Color.Green
                         } else if (change != null && change.changedToUp()) {
                             // abort drag
                             change.consume()
-                            ballColor = Color.Blue
+                            //ballColor = Color.Blue
                             pga?.isTouchActive?.set(false)
                         }
                     }
@@ -256,7 +256,7 @@ fun GameField(pga: PartyGameActivity? = null) {
             // ball
             Box(modifier = Modifier
                 .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                .size(ballsize.dp, ballsize.dp)
+                .size(ballSize.dp, ballSize.dp)
                 .clip(CircleShape)
                 .background(ballColor)
                 )
