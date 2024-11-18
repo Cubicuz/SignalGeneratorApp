@@ -92,33 +92,53 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
         var mFrequency by frequency
         var buttonColor by remember { mutableStateOf(Color.Green) }
         Text(text = "Frequency: " + (mFrequency*mFrequency).toString())
-        Slider(value = mFrequency,
-            onValueChange = {
-                mFrequency = it
-                sineSignalLeft?.frequency()?.set((it * it).toDouble())
-                sineSignalRight?.frequency()?.set((it * it).toDouble())
-                            },
-            valueRange = 1f..100f,
-            modifier = Modifier.pointerInteropFilter {
-                when (it.action) {
-                    MotionEvent.ACTION_DOWN -> {buttonColor = Color.Red
-                        signalLeft?.input()?.set(1.0)
-                        signalRight?.input()?.set(1.0)}
-                }
-                false
-            },
-            onValueChangeFinished = {
-                buttonColor = Color.Green
-                signalLeft?.input()?.set(0.0)
-                signalRight?.input()?.set(0.0)
-            }
-            )
+
 
 
 
         var buttonColorLeft by remember { mutableStateOf(Color.Green) }
         var buttonColorRight by remember { mutableStateOf(Color.Green) }
-
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Slider(value = mFrequency,
+                onValueChange = {
+                    mFrequency = it
+                    sineSignalLeft?.frequency()?.set((it * it).toDouble())
+                },
+                valueRange = 1f..100f,
+                modifier = Modifier.pointerInteropFilter {
+                    when (it.action) {
+                        MotionEvent.ACTION_DOWN -> {buttonColorLeft = Color.Red
+                            signalLeft?.input()?.set(1.0)}
+                    }
+                    false
+                }.weight(1f),
+                onValueChangeFinished = {
+                    buttonColorLeft = Color.Green
+                    signalLeft?.input()?.set(0.0)
+                }
+            )
+            Slider(value = mFrequency,
+                onValueChange = {
+                    mFrequency = it
+                    sineSignalRight?.frequency()?.set((it * it).toDouble())
+                },
+                valueRange = 1f..100f,
+                modifier = Modifier.pointerInteropFilter {
+                    when (it.action) {
+                        MotionEvent.ACTION_DOWN -> {buttonColorRight = Color.Red
+                            signalRight?.input()?.set(1.0)}
+                    }
+                    false
+                }.weight(1f),
+                onValueChangeFinished = {
+                    buttonColorRight = Color.Green
+                    signalRight?.input()?.set(0.0)
+                }
+            )
+        }
         Row (
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(5.dp)
@@ -149,7 +169,28 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
                     true
                 }.weight(1f))
             { Text("~ Shock Right ~") }
-       }
+        }
+        Slider(value = mFrequency,
+            onValueChange = {
+                mFrequency = it
+                sineSignalLeft?.frequency()?.set((it * it).toDouble())
+                sineSignalRight?.frequency()?.set((it * it).toDouble())
+            },
+            valueRange = 1f..100f,
+            modifier = Modifier.pointerInteropFilter {
+                when (it.action) {
+                    MotionEvent.ACTION_DOWN -> {buttonColor = Color.Red
+                        signalLeft?.input()?.set(1.0)
+                        signalRight?.input()?.set(1.0)}
+                }
+                false
+            },
+            onValueChangeFinished = {
+                buttonColor = Color.Green
+                signalLeft?.input()?.set(0.0)
+                signalRight?.input()?.set(0.0)
+            }
+        )
 
         Button(onClick = {},
             colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
