@@ -81,6 +81,7 @@ class ShockGameActivity : ComponentActivity() {
 }
 
 internal val frequency = mutableStateOf(0.0f)
+internal val intensity = mutableStateOf(0.0f)
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -90,8 +91,9 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         var mFrequency by frequency
+        var mIntensity by intensity
         var buttonColor by remember { mutableStateOf(Color.Green) }
-        Text(text = "Frequency: " + (mFrequency*mFrequency).toString())
+        Text(text = "Selected Frequency: " + (mFrequency*mFrequency).toString())
 
 
 
@@ -111,7 +113,7 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
                 modifier = Modifier.pointerInteropFilter {
                     when (it.action) {
                         MotionEvent.ACTION_DOWN -> {buttonColorLeft = Color.Red
-                            signalLeft?.input()?.set(1.0)}
+                            signalLeft?.input()?.set(mIntensity.toDouble())}
                     }
                     false
                 }.weight(1f),
@@ -129,7 +131,7 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
                 modifier = Modifier.pointerInteropFilter {
                     when (it.action) {
                         MotionEvent.ACTION_DOWN -> {buttonColorRight = Color.Red
-                            signalRight?.input()?.set(1.0)}
+                            signalRight?.input()?.set(mIntensity.toDouble())}
                     }
                     false
                 }.weight(1f),
@@ -148,7 +150,7 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
                 modifier = Modifier.pointerInteropFilter {
                     when (it.action) {
                         MotionEvent.ACTION_DOWN -> {buttonColorLeft = Color.Red
-                            signalLeft?.input()?.set(1.0)}
+                            signalLeft?.input()?.set(mIntensity.toDouble())}
                         MotionEvent.ACTION_UP -> {buttonColorLeft = Color.Green
                             signalLeft?.input()?.set(0.0)}
                         else -> false
@@ -161,7 +163,7 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
                 modifier = Modifier.pointerInteropFilter {
                     when (it.action) {
                         MotionEvent.ACTION_DOWN -> {buttonColorRight = Color.Red
-                            signalRight?.input()?.set(1.0)}
+                            signalRight?.input()?.set(mIntensity.toDouble())}
                         MotionEvent.ACTION_UP -> {buttonColorRight = Color.Green
                             signalRight?.input()?.set(0.0)}
                         else -> false
@@ -180,8 +182,8 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
             modifier = Modifier.pointerInteropFilter {
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> {buttonColor = Color.Red
-                        signalLeft?.input()?.set(1.0)
-                        signalRight?.input()?.set(1.0)}
+                        signalLeft?.input()?.set(mIntensity.toDouble())
+                        signalRight?.input()?.set(mIntensity.toDouble())}
                 }
                 false
             },
@@ -197,8 +199,8 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
             modifier = Modifier.pointerInteropFilter {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {buttonColor = Color.Red
-                    signalLeft?.input()?.set(1.0)
-                    signalRight?.input()?.set(1.0)}
+                    signalLeft?.input()?.set(mIntensity.toDouble())
+                    signalRight?.input()?.set(mIntensity.toDouble())}
                 MotionEvent.ACTION_UP -> {buttonColor = Color.Green
                     signalLeft?.input()?.set(0.0)
                     signalRight?.input()?.set(0.0)}
@@ -208,6 +210,13 @@ fun content(signalLeft: LinearRampSignal?, sineSignalLeft: SineSignal?, signalRi
             }.fillMaxWidth())
         { Text("~~~ Shock ~~~") }
 
+        Text(text = "Selected Intensity: %.0f%%".format(mIntensity*100))
+        Slider(value = mIntensity,
+            onValueChange = {
+                mIntensity = it
+            },
+            valueRange = 0f..1f,
+            steps = 9)
     }
 
 
